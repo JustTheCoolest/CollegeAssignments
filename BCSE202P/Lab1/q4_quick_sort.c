@@ -15,11 +15,7 @@ void swap(int *a, int *b){
 int incrementTraverser(int numbers[], int traverser, int pivot, int index_limit){
     int number_at_traverser;
     int direction = index_limit - traverser > 0 ? 1 : -1;
-    void* compare(int, int) = direction ? : ;
-    while(
-        number_at_traverser = numbers[traverser],
-        compare(number_at_traverser, pivot) && compare(number_at_traverser, index_limit+direction);
-    ){
+    while(numbers[traverser]*direction < pivot*direction && traverser*direction <= index_limit-direction){
         traverser += direction;
     }
     return traverser;
@@ -27,16 +23,12 @@ int incrementTraverser(int numbers[], int traverser, int pivot, int index_limit)
 
 void quickSort(int numbers[], int start_index, int end_index){
     int pivot = numbers[start_index];
-    int left_traverser = start_index+1;
+    int left_traverser = start_index;
     int right_traverser = end_index;
     int swapped_flag = 0;
     while(1){
-        while(numbers[left_traverser] < pivot && left_traverser <= end_index){
-            left_traverser++;
-        }
-        while(numbers[right_traverser] > pivot && right_traverser >= start_index){
-            right_traverser--;
-        }
+        incrementTraverser(numbers, left_traverser, pivot, end_index);
+        incrementTraverser(numbers, right_traverser, pivot, start_index);
         if(left_traverser >= right_traverser){
             break;
         }
@@ -62,13 +54,22 @@ void printArray(int n, int numbers[], int k1, int k2){
 }
 
 int main(){
+    int n = 10;
+    int numbers[10] = {10, 3, 5, 9, 7, 2, 6, 1, 4, 8};
+    int k1 = 4, k2 = 9;
+    printArray(n, numbers, 0, n-1);
+    quickSort(numbers, 0, n-1);
+    printArray(n, numbers, k1, k2);
+}
+
+int Xmain(){
     int n;
     scanf("%d", &n);
     int numbers[n];
     getInputs(n, numbers);
     int k1, k2; 
     scanf("%d %d", &k1, &k2);
-    //quickSort(numbers, 0, n-1);
+    quickSort(numbers, 0, n-1);
     printArray(n, numbers, 0, n-1);
     printArray(n, numbers, k1, k2);
 }
