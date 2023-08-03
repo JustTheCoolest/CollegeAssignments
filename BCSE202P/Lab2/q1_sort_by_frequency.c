@@ -45,8 +45,9 @@ int fillDictionary(int n, int dictionary[n][2], int array[]){
     count++;
     prev = &dictionary[count][0];
     *prev = array[i];
+    dictionary[count][1] = 1;
   }
-  return count;
+  return count+1;
 }
 
 void printSortedDict(int dn, int dictionary[dn][2]){
@@ -69,8 +70,25 @@ void printSortedDict(int dn, int dictionary[dn][2]){
   }
 }
 
+void printArray(int n, int numbers[], int k1, int k2){
+    for(int i=k1; i<=k2; ++i){
+        printf("%d ", numbers[i]);
+    }
+    printf("\n");
+}
+
 void Fsort(int n, int array[]){
   int dictionary[n][2];
+  bubble_sort(n, array);
+  //printArray(n, array, 0, n-1);
   int dn = fillDictionary(n, dictionary, array);
+//   for(int i=0; i<dn; ++i){
+//       printf("%d %d\n", dictionary[i][0], dictionary[i][1]);
+//   }
   printSortedDict(dn, dictionary);
+}
+
+int main(){
+    int arr[] = {2, 5, 2, 8, 5, 6, 8, 8};
+    Fsort(8, arr);
 }
