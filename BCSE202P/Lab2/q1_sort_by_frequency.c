@@ -52,8 +52,9 @@ int fillDictionary(int n, int dictionary[n][2], int array[]){
 
 void printSortedDict(int dn, int dictionary[dn][2]){
   int prev_max = INFINITY;
-  int new_max = -1;
+  int new_max;
   while(1){
+    new_max = -1;
     for(int i=0; i<dn; ++i){
       if(dictionary[i][1] > new_max && dictionary[i][1] < prev_max){
         new_max = dictionary[i][1];
