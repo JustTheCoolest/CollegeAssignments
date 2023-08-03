@@ -16,6 +16,12 @@ for i in range(0, n-1):
 #include <stdio.h>
 #include <math.h>
 
+void swap(int *a, int *b){
+    int temp = *a;
+    *a = *b;
+    *b = temp; 
+}
+
 void bubble_sort(int n, int array[]){
   for(int i=0; i<n-1; ++i){
     for(int j=0; j<n-i-1; ++j){
@@ -26,7 +32,7 @@ void bubble_sort(int n, int array[]){
   }
 }
 
-int fillDictionary(dn, dictionary, n, array){
+int fillDictionary(int n, int dictionary[n][2], int array[]){
   int count=0;
   int *prev = &dictionary[count][0];
   *prev = array[0];
@@ -43,8 +49,8 @@ int fillDictionary(dn, dictionary, n, array){
   return count;
 }
 
-void printSortedDict(dn, dictionary){
-  int prev_max = inf;
+void printSortedDict(int dn, int dictionary[dn][2]){
+  int prev_max = INFINITY;
   int new_max = -1;
   while(1){
     for(int i=0; i<dn; ++i){
@@ -63,10 +69,8 @@ void printSortedDict(dn, dictionary){
   }
 }
 
-void Fsort(int array[]){
-  int n = sizeof(array);
+void Fsort(int n, int array[]){
   int dictionary[n][2];
   int dn = fillDictionary(n, dictionary, array);
   printSortedDict(dn, dictionary);
 }
-  
