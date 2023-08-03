@@ -12,6 +12,19 @@ void swap(int *a, int *b){
     *b = temp; 
 }
 
+int incrementTraverser(int numbers[], int traverser, int pivot, int index_limit){
+    int number_at_traverser;
+    int direction = index_limit - traverser > 0 ? 1 : -1;
+    void* compare(int, int) = direction ? : ;
+    while(
+        number_at_traverser = numbers[traverser],
+        compare(number_at_traverser, pivot) && compare(number_at_traverser, index_limit+direction);
+    ){
+        traverser += direction;
+    }
+    return traverser;
+}
+
 void quickSort(int numbers[], int start_index, int end_index){
     int pivot = numbers[start_index];
     int left_traverser = start_index+1;
