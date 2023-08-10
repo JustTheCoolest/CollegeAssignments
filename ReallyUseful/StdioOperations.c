@@ -1,8 +1,9 @@
 #include <stdio.h>
 
-void getInputs(int n, int numbers[]){
+void getInputs(int n, int array[]){
+    printf("Enter %d elements: \n", n);
     for(int i=0; i<n; i++){
-        scanf("%d", &numbers[i]);
+        scanf("%d", &array[i]);
     }
 }
 

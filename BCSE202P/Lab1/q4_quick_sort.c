@@ -1,5 +1,5 @@
-#include "../../Really Useful/QuickSort.c"
-#include "../../Really Useful/StdioOperations.c"
+#include "../../ReallyUseful/QuickSort.c"
+#include "../../ReallyUseful/StdioOperations.c"
 
 void printArrayWithRange(int n, int numbers[], int k1, int k2){
     for(int i=k1; i<=k2; ++i){
