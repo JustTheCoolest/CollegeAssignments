@@ -1,8 +1,4 @@
-void swap(int *a, int *b){
-    int temp = *a;
-    *a = *b;
-    *b = temp; 
-}
+#include "IntegerOperations.c"
 
 int incrementedTraverser(int numbers[], int traverser, int pivot, int index_limit){
     int direction = index_limit - traverser > 0 ? 1 : -1;
