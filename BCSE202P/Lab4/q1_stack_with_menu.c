@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "stack.c"
+#include "../../ReallyUseful/stack.c"
 
 int main(){
     int n;
@@ -12,21 +12,21 @@ int main(){
         printf("0. Exit\n1. Pop\n2.Push\n3. Peek\n 4.Display\n");
         scanf("%d", &choice);
         switch(choice){
-            case 1:
+            case 2:
             printf("Element to push: ");
             int element;
             scanf("%d", &element);
             push(n, stack, &top, element);
             break;
-            case 2:
-            printf("Element popped: %d\n", pop(n, stack, &top, element));
+            case 1:
+            printf("Element popped: %d\n", pop(n, stack, &top));
             break;
             case 3:
-            printf("Top element: %d", peek(n, stack, &top, element));
+            printf("Top element: %d", peek(n, stack, &top));
             break;
             case 4:
             display(n, stack, &top);
         }
-        printf("Program ended\n");
     }
+    printf("Program ended\n");
 }
