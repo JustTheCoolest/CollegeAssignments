@@ -22,7 +22,7 @@ int main(){
             printf("Element popped: %d\n", pop(n, stack, &top));
             break;
             case 3:
-            printf("Top element: %d", peek(n, stack, &top));
+            printf("Top element: %d\n", peek(n, stack, &top));
             break;
             case 4:
             display(n, stack, &top);

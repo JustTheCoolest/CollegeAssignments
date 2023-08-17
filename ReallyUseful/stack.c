@@ -26,10 +26,10 @@ int pop(int const n, int stack[], int * const top){
 
 int peek(int const n, int const stack[], int const * const top){
     if(outOfLimits(n, *top)<0){
-        printf("Stack underflow\n");
+        printf("There are no elements in the stack\n");
         return 0;
     }
-    return stack[*top];
+    return stack[*top-1];
 }
 
 void display(int const n, int const stack[], int const *top){
