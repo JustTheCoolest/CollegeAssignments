@@ -5,7 +5,7 @@ int data[5];
 
 int t1, t2;
 
-int init(){
+void init(){
     t1=0;
     t2=n-1;
 }
@@ -83,8 +83,8 @@ void display1(){
 }
 
 void display2(){
-    if(outOfLimits()==-1){
-        printf("No elements in stack 1\n");
+    if(outOfLimits()==-2){
+        printf("No elements in stack 2\n");
         return;
     }
     for(int i=n-1; i>t2; --i){

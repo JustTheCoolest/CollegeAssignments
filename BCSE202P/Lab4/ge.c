@@ -5,13 +5,15 @@ int function(int const n, int const array[]){
     int stack[50];
     int top = 0;
     for(int i=0; i<n; ++i){
+        //display(50, stack, &top);
         while(!(outOfLimits(50, top)<0) && peek(50, stack, &top)<array[i]){
             printf("%d -> %d\n", pop(50, stack, &top), array[i]);
         }
         push(50, stack, &top, array[i]);
-        while(!(outOfLimits(50, top)<0)){
-            printf("%d -> -1\n", pop(50, stack, &top));
-        }
+        //display(50, stack, &top);
+    }
+    while(!(outOfLimits(50, top)<0)){
+        printf("%d -> -1\n", pop(50, stack, &top));
     }
 }
 
