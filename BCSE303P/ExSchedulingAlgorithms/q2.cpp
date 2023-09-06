@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include <unistd.h>
 using namespace std;
 
 struct process{
@@ -11,6 +10,44 @@ struct process{
     unsigned int remaining_time;
     unsigned int priority;
 };
+
+class RoundRobinReadyProcesses{
+    const unsigned int time_quantum;
+    LinkedCircle<process*> dataTraverser();
+    RoundRobinReadyProcesses(const unsigned int time_quantum): time_quantum(time_quantum){}
+    void catchNewProcesses(){
+        for 
+        dataTraverser.addInFront();
+    }
+    process* nextInRound(){
+        return dataTraverser.next();
+    }
+    void terminatePreviousProcess(){
+        dataTraverser.removePrevious();
+    }
+} round_robin_ready_processes;
+
+process* nextInRound(
+        unsigned clock_time, 
+        const unsigned time_quantum,
+        const unsigned number_of_processses, 
+        process* const processes[]
+    ){
+    static LinkedCircle<process*> dataTraverser();
+    if(dataTraverser.peekPrevious()->remaining_time<=0){
+        dataTraverser.removePrevious();
+    }
+    unsigned previous_clock_time = clock_time - time_quantum;
+    for(; clock_time > previous_clock_time; --clock_time){
+        for(int i=0; i<number_of_processses; ++i){
+            process* process_at_iteration = processes[i];
+            if(process_at_iteration->start_time == clock_time){
+                dataTraverser.addInFront();
+            }
+        }
+    }
+    return dataTraverser.next();
+}
 
 int updatedCheckpoint(int nearest_new_process_entry_time, struct process const * const process_in_current_iteration, int const clock_time){
     int process_in_future = process_in_current_iteration->start_time > clock_time;
@@ -149,6 +186,15 @@ struct process* findPrior(
         clock_time, 
         nearest_new_process_entry_time
     );
+}
+
+process* findNextInRound(
+    int number_of_processes,
+    struct process processes[],
+    int &clock_time,
+    unsigned int &nearest_new_process_entry_time
+){
+
 }
 
 void scheduler_driver(
