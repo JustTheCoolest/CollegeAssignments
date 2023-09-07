@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include "../../ReallyUseful/LinkedCircle.cpp"
 using namespace std;
+
+// INPUT Constants
+const unsigned time_quantum = 2;
 
 struct process{
     unsigned int id;
@@ -11,42 +15,37 @@ struct process{
     unsigned int priority;
 };
 
-class RoundRobinReadyProcesses{
-    const unsigned int time_quantum;
-    LinkedCircle<process*> dataTraverser();
-    RoundRobinReadyProcesses(const unsigned int time_quantum): time_quantum(time_quantum){}
-    void catchNewProcesses(){
-        for 
-        dataTraverser.addInFront();
-    }
-    process* nextInRound(){
-        return dataTraverser.next();
-    }
-    void terminatePreviousProcess(){
-        dataTraverser.removePrevious();
-    }
-} round_robin_ready_processes;
-
 process* nextInRound(
         unsigned clock_time, 
         const unsigned time_quantum,
         const unsigned number_of_processses, 
-        process* const processes[]
+        process processes[]
     ){
-    static LinkedCircle<process*> dataTraverser();
-    if(dataTraverser.peekPrevious()->remaining_time<=0){
-        dataTraverser.removePrevious();
-    }
-    unsigned previous_clock_time = clock_time - time_quantum;
-    for(; clock_time > previous_clock_time; --clock_time){
+    static LinkedCircle<process*> dataTraverser;
+    dataTraverser.display();
+    process* current_process = dataTraverser.current();
+    //printf("Current process: %d\n", current_process==NULL?0:current_process->id);
+    static int previous_clock_time = -2; // clock_time - time_quantum;
+    int clock_time_copy = clock_time;
+    //printf("Clock time, previous clock time : %u %d\n", clock_time, previous_clock_time);
+    //printf("%d\n", clock_time>previous_clock_time);
+    for(; (int)clock_time > previous_clock_time; --clock_time){
+        //("Clock time: %d\n", clock_time);
         for(int i=0; i<number_of_processses; ++i){
-            process* process_at_iteration = processes[i];
+            process* process_at_iteration = &processes[i];
+            //printf("Process %d: %d\n", process_at_iteration->id, process_at_iteration->start_time);
             if(process_at_iteration->start_time == clock_time){
-                dataTraverser.addInFront();
+                dataTraverser.addInFront(process_at_iteration);
             }
         }
     }
-    return dataTraverser.next();
+    // printf("Caught!\n");
+    previous_clock_time = clock_time_copy;
+    if(current_process!=NULL && current_process->remaining_time<=0){
+        dataTraverser.removeCurrentAndStep();
+        return dataTraverser.current();
+    }
+    return dataTraverser.stepNext();
 }
 
 int updatedCheckpoint(int nearest_new_process_entry_time, struct process const * const process_in_current_iteration, int const clock_time){
@@ -188,13 +187,15 @@ struct process* findPrior(
     );
 }
 
+// Bug to correct when needed: Ends Round Robin simulator when unfinished proceses at a particular time instant are 0
 process* findNextInRound(
-    int number_of_processes,
-    struct process processes[],
-    int &clock_time,
-    unsigned int &nearest_new_process_entry_time
+        int number_of_processes,
+        struct process processes[],
+        int &clock_time,
+        unsigned int &nearest_new_process_entry_time
 ){
-
+    nearest_new_process_entry_time = clock_time + time_quantum;
+    return nextInRound(clock_time, time_quantum, number_of_processes, processes);
 }
 
 void scheduler_driver(
@@ -215,6 +216,7 @@ void scheduler_driver(
             closest_uncompleted_process_start_time
         );
         if(best==NULL){
+            // cout << "Null best" << endl;
             break;
         }
         printf("Process %d started at %d\n", best->id, clock_time);
@@ -250,7 +252,8 @@ int main(){
     test_updatedCheckpoint();
     //test_find_best_psjf();
     //tests();
-    for(int i=0; i<2; ++i){
+    // test();
+    for(int i=0; i<3; ++i){
         const int number_of_processes = 5;
         struct process processes_to_simulate[number_of_processes] = {
             {1, 0, 15, 15, 3}, {2, 2, 2, 2, 1}, {3, 4, 5, 5, 4}, {4, 7, 1, 1, 5}, {5, 3, 14, 14, 2}
@@ -263,6 +266,10 @@ int main(){
             case 1:
             printf("Preemptive Priory first:\n");
             scheduler_driver(findPrior, number_of_processes, processes_to_simulate);
+            break;
+            case 2:
+            printf("Round robin:\n");
+            scheduler_driver(findNextInRound, number_of_processes, processes_to_simulate);
             break;
         }
         printf("\n");
