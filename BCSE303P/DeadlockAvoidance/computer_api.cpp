@@ -28,6 +28,16 @@ class Process{
             need[i] = total_request[i];
         }
     }
+    Process(Computer *new_computer, Process &original){
+        number_of_types_of_resources = original.number_of_types_of_resources;
+        total_request = new int[number_of_types_of_resources];
+        copyArray<int>(number_of_types_of_resources, total_request, original.total_request);
+        computer = new_computer;
+        name = original.name;
+        terminated = original.terminated;
+        need = new int[number_of_types_of_resources];
+        copyArray<int>(number_of_types_of_resources, need, original.need);
+    }
     void grant(int request[]){
         bool flag = true;
         for(int i=0; i<number_of_types_of_resources; ++i){
@@ -72,6 +82,7 @@ class Computer{
         // }
         process->grant(request);
         if(!isSafe()){
+        // if(false){
             // cout << "Process " << process->name << " is not safe" << endl;
             for(int i = 0; i < number_of_types_of_resources; ++i){
                 available_resources[i] += request[i]; 
@@ -91,6 +102,15 @@ class Computer{
         }
         cout << endl;
     }
+    Computer(Computer &original){
+        number_of_types_of_resources = original.number_of_types_of_resources;
+        available_resources = new int[number_of_types_of_resources];
+        copyArray<int>(number_of_types_of_resources, available_resources, original.available_resources);
+        process_pointer = original.process_pointer;
+        for(int i=0; i<process_pointer; ++i){
+            processes[i] = new Process(this, *original.processes[i]);
+        }
+    }
     Process* newProcess(string name, int total_request[]){
         Process *process = new Process(number_of_types_of_resources, name, total_request, this);
         processes[process_pointer++] = process;
@@ -98,14 +118,10 @@ class Computer{
         return process;
     }
     bool isSafe(){
-        int copy = process_pointer;
-        while(--copy>-1){
-            for(int i=0; i<number_of_types_of_resources; ++i){
-                if(processes[copy]->need[i] > available_resources[i]){ 
-                    return false;
-                }
-            }
-        }
+        Computer ghost = *this;
+        ghost.findSafeSequence(false);
+        // findSafeSequence(false);
+        // return ghost.isFree();
         return true;
     }
     Process *runStep(){
@@ -123,16 +139,17 @@ class Computer{
         }
         return nullptr;
     }
-    void findSafeSequence(){
+    void findSafeSequence(bool print_flag = true){
+        // Task: Return instead of printing
         Process *process;
         while((process=runStep())!=nullptr){
-            std::cout << process->name << " ";
+            if(print_flag) std::cout << process->name << " ";
             // for(int i=0; i<number_of_types_of_resources; ++i){
             //     cout << available_resources[i] << " "; 
             // }
             // cout << endl;
         }
-        cout << endl;
+        if(print_flag) cout << endl;
     }
     bool isFree(){
         for(int i=0; i<process_pointer; ++i){
@@ -143,9 +160,9 @@ class Computer{
         return true;
     }
     friend class Process;
-    // Flag: Add a destructor to delete all processes
+    // Flag: Add a destructor to delete all pointers
     ~Computer(){
-        delete[] available_resources;
-        freeArray<Process*>(process_pointer, processes);
+        // delete[] available_resources;
+        // freeArray<Process*>(process_pointer, processes);
     }
 };

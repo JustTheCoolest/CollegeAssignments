@@ -21,3 +21,17 @@ void allMultiply(int n, DataType array[], int k){
         array[i] *= k;
     }
 }
+
+template <class DataType>
+void copyArray(int n, DataType destination[], DataType source[]){
+    for(int i=0; i<n; ++i){
+        destination[i] = source[i];
+    }
+}
+
+template <class DataType>
+void copyObjectsFromPointerArray(int n, DataType *destination[], DataType *source[]){
+    while(--n){
+        destination[n] = new DataType(*source[n]);
+    }
+}
