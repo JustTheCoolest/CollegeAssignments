@@ -23,6 +23,13 @@ void allMultiply(int n, DataType array[], int k){
 }
 
 template <class DataType>
+void allAdd(int n, DataType array[], DataType array2[]){
+    for(int i=0; i<n; ++i){
+        array[i] += array2[i];
+    }
+}
+
+template <class DataType>
 void copyArray(int n, DataType destination[], DataType source[]){
     for(int i=0; i<n; ++i){
         destination[i] = source[i];

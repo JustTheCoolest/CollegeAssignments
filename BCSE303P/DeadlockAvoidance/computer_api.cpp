@@ -27,6 +27,9 @@ class Process{
             this->total_request[i] = total_request[i];
             need[i] = total_request[i];
         }
+        // cout << "Creating process " << name << " with total request ";
+        // printArray<int>(" ", number_of_types_of_resources, total_request);
+        showNeed();
     }
     Process(Computer *new_computer, Process &original){
         number_of_types_of_resources = original.number_of_types_of_resources;
@@ -47,12 +50,17 @@ class Process{
             }
         }
         terminated = flag;
+        showNeed();
     }
     // void setNeed(int need[]){
     //     for(int i=0; i<number_of_types_of_resources; ++i){
     //         this->need[i] = need[i];
     //     }
     // }
+    void showNeed(){
+        cout << "Need of process " << name << " is ";
+        printArray<int>(" ", number_of_types_of_resources, need);
+    }
     friend class Computer;
 };
 
@@ -81,14 +89,15 @@ class Computer{
         //     cout << available_resources[i] << " ";
         // }
         process->grant(request);
-        if(!isSafe()){
-        // if(false){
+        // if(!isSafe()){
+        if(true){
             // cout << "Process " << process->name << " is not safe" << endl;
-            for(int i = 0; i < number_of_types_of_resources; ++i){
-                available_resources[i] += request[i]; 
-            }
-            allMultiply<int>(number_of_types_of_resources, request, -1);
-            process->grant(request);
+            // for(int i = 0; i < number_of_types_of_resources; ++i){
+            //     available_resources[i] += request[i]; 
+            // }
+            // allAdd<int>(number_of_types_of_resources, available_resources, request);
+            // allMultiply<int>(number_of_types_of_resources, request, -1);
+            // process->grant(request);
             return -3;
         }
         return 0;

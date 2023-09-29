@@ -1,21 +1,18 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include "ReallyUseful/Cpp/IOStreamOperations.cpp"
+using namespace std;
+
+class Akhilesh{
+    public:
+    int *a;
+    Akhilesh(){
+        *a = 5;
+        cout << "Regular construcotor is called" << endl;
+    }
+};
 
 int main(){
-    int a=90;
-    int* b=&a;
-    int pid = fork();
-    if(pid<0){
-        exit(1);
-    }
-    else if(pid==0){
-        *b = 10;
-        printf("%d",*b);
-    }
-    else{
-        wait(NULL);
-        printf("%d",*b);
-    }
+    Akhilesh A;
+    Akhilesh B = A;
+    *B.a = 42;
+    cout << *A.a << endl;
 }
