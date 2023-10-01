@@ -1,18 +1,15 @@
-#include "ReallyUseful/Cpp/IOStreamOperations.cpp"
+#include <iostream>
 using namespace std;
 
-class Akhilesh{
-    public:
-    int *a;
-    Akhilesh(){
-        *a = 5;
-        cout << "Regular construcotor is called" << endl;
-    }
-};
+void func2(auto f){
+    int a = 20, b = 90;
+    f();
+}
 
 int main(){
-    Akhilesh A;
-    Akhilesh B = A;
-    *B.a = 42;
-    cout << *A.a << endl;
+    int a=5, b=7;
+    auto func = [=, &a](){cout << a << " " << b << endl;};
+    a = 10;
+    b = 42;
+    func2(func);
 }

@@ -68,6 +68,8 @@ int main(){
                 int total_request[number_of_types_of_resources];
                 cout << "Enter total request of process " << i+1 << ": " << endl;
                 getInputs(number_of_types_of_resources, total_request);
+                // cout << "Total requests input: ";
+                // printArray<int>(" ", number_of_types_of_resources, total_request);
                 processes[i] = computer.newProcess("P"+std::to_string(i), total_request);
                 cout << "Enter currently allocated resources of process " << i+1 << ": " << endl;
                 int allocated[number_of_types_of_resources];
@@ -101,7 +103,14 @@ int main(){
             add_processes(Doraemon);
             cout << "Available resources at t0: ";
             printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
-            cout << "Process running at t0: " << Doraemon.runStep()->name << endl;
+            cout << "Process running at t0: ";
+            try{
+                cout << Doraemon.runStep()->name << endl;
+                cout << "Anything" << endl;
+            }
+            catch(...){
+                cout << "No process running" << endl;
+            }
             cout << "Available resources at t1: ";
             printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
             cout << "Requesting <1 1 0> for P0 at t1..." << endl;

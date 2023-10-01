@@ -6,7 +6,7 @@ void freeArray(int n, DataType array[]){
 }
 
 template <class DataType>
-bool allNotGreaterThan(int n, DataType array[], DataType array2[]){
+bool notGreaterThanCorresponding(int n, DataType array[], DataType array2[]){
     for(int i=0; i<n; ++i){
         if(array[i] > array2[i]){
             return false;
@@ -16,14 +16,14 @@ bool allNotGreaterThan(int n, DataType array[], DataType array2[]){
 }
 
 template <class DataType>
-void allMultiply(int n, DataType array[], int k){
+void multiplyEach(int n, DataType array[], int k){
     for(int i=0; i<n; ++i){
         array[i] *= k;
     }
 }
 
 template <class DataType>
-void allAdd(int n, DataType array[], DataType array2[]){
+void addEach(int n, DataType array[], DataType array2[]){
     for(int i=0; i<n; ++i){
         array[i] += array2[i];
     }
@@ -42,3 +42,20 @@ void copyObjectsFromPointerArray(int n, DataType *destination[], DataType *sourc
         destination[n] = new DataType(*source[n]);
     }
 }
+
+template <class DataType>
+void sortByParameter(int const index, int const n, DataType array[]){
+    // Task: Take function input instead of index input to give more power
+    int copy = n;
+    while(--copy){
+        for(int i=0; i<copy, ++i){
+            if(array[i][index] > array[i+1][index]){
+                DataType temp = array[i];
+                array[i] = array[i+1];
+                array[i+1] = temp;
+            }
+        }
+    } 
+}
+
+ 
