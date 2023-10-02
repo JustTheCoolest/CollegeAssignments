@@ -10,6 +10,14 @@ void printArray(std::string seperator, int n, DataType numbers[]){
 }
 
 template <class DataType>
+void printArrayStringForm(std::string separator, int n, DataType data[]){
+    for(int i=0; i<n-1; ++i){
+        std::cout << data[i]->toString() << separator;
+    }
+    std::cout << data[n-1]->toString() << std::endl;
+}
+
+template <class DataType>
 void getInputs(int n, DataType array[]){
     for(int i=0; i<n; ++i){
         std::cout << "Enter element " << i+1 << ": ";
