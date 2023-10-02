@@ -198,21 +198,22 @@ class Computer{
         // return ghost.isFree();
         return true;
     }
-    Process *runStep(bool print_flag = true){
-        int copy = process_pointer;
-        // cout << "number of processes: " << copy << endl;
-        while(--copy>-1){
-            //cout << "Checking process " << processes[copy]->name << endl;
-            if(!processes[copy]->terminated && request(processes[copy], processes[copy]->need, print_flag) == 0){
-                // cout << "Process " << processes[copy]->name << " terminated" << endl;
-                for(int i=0; i<number_of_types_of_resources; ++i){
-                    available_resources[i] += processes[copy]->total_request[i];
-                }
-                return processes[copy];
-            }
-        }
-        return nullptr;
-    }
+    // Segmentaion Fault
+    // Process* runStep(bool print_flag = true){
+    //     int copy = process_pointer;
+    //     // cout << "number of processes: " << copy << endl;
+    //     while(--copy>-1){
+    //         //cout << "Checking process " << processes[copy]->name << endl;
+    //         if(!processes[copy]->terminated && request(processes[copy], processes[copy]->need, print_flag) == 0){
+    //             // cout << "Process " << processes[copy]->name << " terminated" << endl;
+    //             for(int i=0; i<number_of_types_of_resources; ++i){
+    //                 available_resources[i] += processes[copy]->total_request[i];
+    //             }
+    //             return processes[copy];
+    //         }
+    //     }
+    //     return nullptr;
+    // }
     bool findSafeSequence(bool print_flag = true){
         // // Task: Return instead of printing
         // Process *process;

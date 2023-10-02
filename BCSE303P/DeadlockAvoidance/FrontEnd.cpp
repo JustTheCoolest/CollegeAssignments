@@ -45,7 +45,7 @@ void add_processes(Computer &computer){
 
 int main(){
     int choice;
-    cout << "1. Safe state detection\n2. Sequence detection\n3. Resource allocation problem in question\n";
+    cout << "1. Safe state and sequence detection\n2. Resource allocation problem in question\n";
     cin >> choice;
     switch(choice){
         case 1: {
@@ -97,22 +97,23 @@ int main(){
             }
             break;
         }
-        case 3: {
+        case 2: {
             int maximum_resources[number_of_types_of_resources] = {10, 6, 6, 4};
             Computer Doraemon(number_of_types_of_resources, maximum_resources);
             add_processes(Doraemon);
-            cout << "Available resources at t0: ";
+            cout << "Available resources initially: ";
             printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
-            cout << "Process running at t0: ";
-            try{
-                cout << Doraemon.runStep()->name << endl;
-                cout << "Anything" << endl;
-            }
-            catch(...){
-                cout << "No process running" << endl;
-            }
-            cout << "Available resources at t1: ";
-            printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
+            // Removed because I now interpret "request at t1" as "request after t0" and not "request after t1"
+            // cout << "Process running at t0: ";
+            // try{
+            //     // cout << Doraemon.runStep()->name << endl;
+            //     cout << "Anything" << endl;
+            // }
+            // catch(...){
+            //     cout << "No process running" << endl;
+            // }
+            // cout << "Available resources at t1: ";
+            // printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
             cout << "Requesting <1 1 0> for P0 at t1..." << endl;
             if(Doraemon.request(Doraemon.processes[0], new int[4]{1, 1, 0, 0})==0){
                 cout << "Request granted" << endl;
