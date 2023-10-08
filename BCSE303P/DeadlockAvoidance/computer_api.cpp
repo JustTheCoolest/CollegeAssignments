@@ -79,9 +79,6 @@ class BankersAlgorithm{
     ){
         // Task: Improve performance by using stacks instead of recursion
         // Task: Instead of iterating through all processes, sorting them beforehand will make it easier to identify safe sequence and to accomodate changes
-        if(number_of_processses == 0){
-            return result;
-        }
         if(filter_flag){
             // filterArray<Process*>(number_of_processses, processes, [](Process *process){return !process->terminated;});
             bool valids[number_of_processses];
@@ -93,6 +90,13 @@ class BankersAlgorithm{
             );
             // Task : Delete old array and create new array here to save memory space
             compressArray<Process*>(valids, number_of_processses, processes);
+            number_of_processses = compressed_number_of_processes;
+        }
+        if(number_of_processses == 0){
+            if(result){
+                return result;
+            }
+            return new Process*[0];
         }
         if(result == nullptr){
             result = new Process*[number_of_processses];
@@ -135,7 +139,7 @@ class Computer{
     public:
     int *available_resources; // Flag: Make these private
     Process *processes[100]; // Flag: Make this dynamic
-    Process** safe_sequence;
+    Process** safe_sequence = nullptr;
     int request(Process *process, int request[], bool print_flag = true){
         // Better UX (?): Call request from process class and then request to computer from there, while not creating circular dependency issues
         for(int i = 0; i < number_of_types_of_resources; ++i){
@@ -154,8 +158,8 @@ class Computer{
         //     cout << available_resources[i] << " ";
         // }
         process->grant(request, print_flag);
-        // if(!isSafe()){
-        if(true){ // TRAP: Re-enable
+        if(findSafeSequence(print_flag) == false){
+        // if(true){ // TRAP: Re-enable
             // cout << "Process " << process->name << " is not safe" << endl;
             // for(int i = 0; i < number_of_types_of_resources; ++i){
             //     available_resources[i] += request[i]; 
@@ -191,13 +195,12 @@ class Computer{
         // cout << "Number of processes: " << process_pointer << endl;
         return process;
     }
-    bool isSafe(){
-        Computer ghost = *this;
-        ghost.findSafeSequence(false);
-        // findSafeSequence(false);
-        // return ghost.isFree();
-        return true;
-    }
+    // Replaced by generalised findSafeSequence
+    // bool isSafe(){
+    //     // findSafeSequence(false);
+    //     // return ghost.isFree();
+    //     return true;
+    // }
     // Segmentaion Fault
     // Process* runStep(bool print_flag = true){
     //     int copy = process_pointer;
@@ -226,6 +229,7 @@ class Computer{
         // }
         // if(print_flag) cout << endl;
         BankersAlgorithm alg = BankersAlgorithm();
+        free(safe_sequence);
         safe_sequence = alg.findSafeSequence(number_of_types_of_resources, available_resources, process_pointer, processes);
         if(safe_sequence == nullptr){
             if(print_flag){
@@ -234,7 +238,7 @@ class Computer{
             return false;
         }
         if(print_flag){
-            printArrayStringForm<Process*>(" ", process_pointer, safe_sequence);
+            printArrayStringForm<Process>(" ", process_pointer, safe_sequence);
         }
         return true;
     }

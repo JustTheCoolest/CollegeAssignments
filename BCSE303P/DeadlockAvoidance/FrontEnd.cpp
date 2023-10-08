@@ -114,7 +114,7 @@ int main(){
             // }
             // cout << "Available resources at t1: ";
             // printArray<int>(" ", number_of_types_of_resources, Doraemon.available_resources);
-            cout << "Requesting <1 1 0> for P0 at t1..." << endl;
+            cout << "Requesting <1 1 0 0> for P0 at t1..." << endl;
             if(Doraemon.request(Doraemon.processes[0], new int[4]{1, 1, 0, 0})==0){
                 cout << "Request granted" << endl;
             }
