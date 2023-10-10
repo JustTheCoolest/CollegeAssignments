@@ -1,19 +1,14 @@
-class ClassName{};
-// Class definition
+#include <iostream>
+using namespace std;
 
-int funcccc(int parameter){
-}
-// Function definition with parameter
-
-ClassName func();
-// Function declaration
-
-int main(){
-    ClassName obj;
-    // Object instantiation
+void mainX(int argc, char** argv){
+    int b;
+    cin >> b;
+    b = b + 5;
+    static int a = b;
+    cout << a << endl;
 }
 
-ClassName func(){
-    
+int main(int argc, char** argv){
+    mainX(argc, argv);
 }
-// Function definition

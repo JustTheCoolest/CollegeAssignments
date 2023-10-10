@@ -52,22 +52,30 @@ void calibrate(byte flame_sensor_pin){
     Serial.println("Calibration starts");
     int threshold = calibrate(flame_sensor_pin);
     Serial.println("Calibration ends with threshold: " + String(threshold));
+    return threshold;
 } 
+
+bool digitalisedData(int sensor_value, int threshold, bool greater_is_higher = true){
+    int sign = greater_is_higher ? 1 : -1;
+    return sensor_value * sign > threshold * sign;
+}
+
+void printIfChanged(int sensor_value, string messages[]){
+    static int prev_sensor_value = sensor_value;
+    
+
+}
 
 void setup(){
   setUpFlameSensor(flame_sensor_pin);
   setUpLed(led_pin);
   Serial.begin(baud_rate);
-  threshold = calibrate(flame_sensor_pin);
+  threshold = ui_calibration(flame_sensor_pin);
 }
 
 void loop(){
   static bool flag;
   int flame_sensor_value = analogRead(flame_sensor_pin);
-  Serial.println(flame_sensor_value);
-  if(flame_sensor_value > 500){
-    digitalWrite(led_pin, HIGH);
-  }else{
-    digitalWrite(led_pin, LOW);
-  }
+  flame_sensor_value = digitalisedData(flame_sensor_value, threshold, false);
+  digitalWrite(led_pin, flame_sensor_value);
 }
