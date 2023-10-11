@@ -2,8 +2,8 @@
 
 constexpr unsigned int baud_rate = 9600;
 constexpr unsigned int rounds_calibration = 500;
-constexpr unsigned int delay_calibration = 0;
-constexpr unsigned float ratio_calibration = 0.3;
+constexpr unsigned int delay_calibration = 10;
+constexpr float ratio_calibration = 0.3;
 
 constexpr byte flame_sensor_pin = A0;
 constexpr byte led_pin = LED_BUILTIN;
@@ -14,14 +14,17 @@ void setUpFlameSensor(byte flame_sensor_pin){
 }
 
 int readFlameSensor(byte flame_sensor_pin){
-  return analogRead(flame_sensor_pin);
+  int value  = analogRead(flame_sensor_pin);
+  // Serial.print(value);
+  // Serial.print(" ");
+  return value;
 }
 
 void setUpLed(byte led_pin){
   pinMode(led_pin, OUTPUT);
 }
 
-void calibrate(byte flame_sensor_pin){
+int calibrate(byte flame_sensor_pin){
     int min = __INT_MAX__, max = -1;
     for(int i=0; i<rounds_calibration; i++){
         int flame_sensor_value = readFlameSensor(flame_sensor_pin);
@@ -43,13 +46,11 @@ void calibrate(byte flame_sensor_pin){
     char input;
     do{
         Serial.print("Enter 'y' when ready with sensor and flame: ");
-        input = Serial.read();
-        input.trim();
-        if(input==''){
-            continue;
-        }
+        do{
+            input = Serial.read();
+        } while(input == -1);
     } while(input != 'y');
-    Serial.println("Calibration starts");
+    Serial.println("\nCalibration starts");
     int threshold = calibrate(flame_sensor_pin);
     Serial.println("Calibration ends with threshold: " + String(threshold));
     return threshold;
@@ -60,10 +61,15 @@ bool digitalisedData(int sensor_value, int threshold, bool greater_is_higher = t
     return sensor_value * sign > threshold * sign;
 }
 
-void printIfChanged(int sensor_value, string messages[]){
-    static int prev_sensor_value = sensor_value;
-    
-
+void printIfChanged(int sensor_value, String messages[2]){
+  static int prev_sensor_value = sensor_value;
+  static bool flag;
+  if(prev_sensor_value == sensor_value){
+    return;
+  }
+  Serial.println(messages[flag]);
+  prev_sensor_value = sensor_value;
+  flag = !flag;
 }
 
 void setup(){
@@ -75,7 +81,9 @@ void setup(){
 
 void loop(){
   static bool flag;
-  int flame_sensor_value = analogRead(flame_sensor_pin);
+  int flame_sensor_value = readFlameSensor(flame_sensor_pin);
   flame_sensor_value = digitalisedData(flame_sensor_value, threshold, false);
+  String messages[] = {"Flame detected", "Flame not detected"};
+  printIfChanged(flame_sensor_value, messages);
   digitalWrite(led_pin, flame_sensor_value);
 }
