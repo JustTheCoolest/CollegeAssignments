@@ -82,7 +82,7 @@ void setup(){
   setUpFlameSensor(flame_sensor_pin);
   Serial.begin(baud_rate);
   threshold = ui_calibration(flame_sensor_pin);
-  pinMode(LED_BUILTIN, OUTPUT);
+  // pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop(){
@@ -92,7 +92,7 @@ void loop(){
   String messages[] = {"Flame detected", "Flame not detected"};
   printIfChanged(flame_sensor_value, messages);
   writeRelaySwitch(flame_sensor_value, relay_pin);
-  bool x = analogRead(A1) > 950 ? HIGH : LOW;
+  // bool x = analogRead(A1) > 950 ? HIGH : LOW;
   // Serial.println(x);
-  digitalWrite(LED_BUILTIN, x);
+  // digitalWrite(LED_BUILTIN, x);
 }
