@@ -1,12 +1,12 @@
 #include <Arduino.h>
 
-constexpr unsigned int baud_rate = 9600;
 constexpr unsigned int rounds_calibration = 500;
 constexpr unsigned int delay_calibration = 10;
 constexpr float ratio_calibration = 0.3;
 
+constexpr unsigned int baud_rate = 9600;
 constexpr byte flame_sensor_pin = A0;
-constexpr byte led_pin = LED_BUILTIN;
+constexpr byte relay_pin = 2;
 int threshold;
 
 void setUpFlameSensor(byte flame_sensor_pin){
@@ -20,8 +20,9 @@ int readFlameSensor(byte flame_sensor_pin){
   return value;
 }
 
-void setUpLed(byte led_pin){
-  pinMode(led_pin, OUTPUT);
+void setUpRelaySwitch(byte relay_pin){  
+  pinMode(relay_pin, OUTPUT);
+  digitalWrite(relay_pin, HIGH);
 }
 
 int calibrate(byte flame_sensor_pin){
@@ -72,11 +73,16 @@ void printIfChanged(int sensor_value, String messages[2]){
   flag = !flag;
 }
 
+void writeRelaySwitch(bool state, byte relay_pin){
+  digitalWrite(relay_pin, !state);
+}
+
 void setup(){
+  setUpRelaySwitch(relay_pin);
   setUpFlameSensor(flame_sensor_pin);
-  setUpLed(led_pin);
   Serial.begin(baud_rate);
   threshold = ui_calibration(flame_sensor_pin);
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop(){
@@ -85,5 +91,8 @@ void loop(){
   flame_sensor_value = digitalisedData(flame_sensor_value, threshold, false);
   String messages[] = {"Flame detected", "Flame not detected"};
   printIfChanged(flame_sensor_value, messages);
-  digitalWrite(led_pin, flame_sensor_value);
+  writeRelaySwitch(flame_sensor_value, relay_pin);
+  bool x = analogRead(A1) > 950 ? HIGH : LOW;
+  // Serial.println(x);
+  digitalWrite(LED_BUILTIN, x);
 }
