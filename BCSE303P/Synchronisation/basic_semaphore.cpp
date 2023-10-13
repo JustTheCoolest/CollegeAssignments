@@ -45,6 +45,7 @@ void thread_init(sem_t *semaphore, pthread_t *thread){
     pthread_create(thread, nullptr, thread1, (void*)&parameters);
 }
 
+// Task: Check return values for semaphore and pthread functions
 int main(){
     sem_t semaphore;
     sem_init(&semaphore, PROCESS_LOCAL, 1);
