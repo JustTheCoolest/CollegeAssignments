@@ -3,12 +3,12 @@
 
 int first_fit_from_start(const int process, std::forward_list<int>& memory_list) {
     int index = -1;
-    for (auto memory_hole : memory_list){
+    for (auto memory_hole = memory_list.begin(); memory_hole != memory_list.end(); ++memory_hole){
         ++index;
-        if (memory_hole < process){
+        if (*memory_hole < process){
             continue;
         }
-        memory_hole -= process;
+        *memory_hole -= process;
         return index;
     }
     return -1;
@@ -33,14 +33,28 @@ int first_fit_from_start(const int process, std::forward_list<int>& memory_list)
 //     return -1;
 // }
 
+void printList(std::forward_list<int>& list){
+    for (auto element : list){
+        std::cout << element << " ";
+    }
+}
+
 void allocate_processes(int (*allocate_process)(const int, std::forward_list<int>&), std::forward_list<int>& process_list, std::forward_list<int>& memory_list) {
+    std::cout << "Memory List: ";
+    printList(memory_list);
+    std::cout << std::endl;
+    std::cout << "Process List: ";
+    printList(process_list);
+    std::cout << std::endl;
     for(auto process : process_list){
         int index_allocated = allocate_process(process, memory_list);
         if (index_allocated == -1){
-            std::cout << "Process " << process << " could not be allocated." << std::endl;
+            std::cout << "Process of size " << process << " could not be allocated." << std::endl;
         } else {
-            std::cout << "Process " << process << " allocated at " << index_allocated << std::endl;
+            std::cout << "Process of size " << process << " allocated at position " << index_allocated+1 << std::endl;
         }
+        printList(memory_list);
+        std::cout << std::endl;
     }
 }
 
