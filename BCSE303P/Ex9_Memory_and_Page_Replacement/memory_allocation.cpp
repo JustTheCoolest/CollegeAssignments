@@ -2,6 +2,7 @@
 #include <list>
 #include <iterator>
 #include <algorithm>
+#include <numeric>
 #include <iostream>
 
 int first_fit_from_start(const int process, std::forward_list<int>& memory_list) {
@@ -50,7 +51,7 @@ void best_fit(const int process, int memory_list[], const int n) {
     if (index == -1){
         std::cout << "Process of size " << process << " could not be allocated." << std::endl;
     } else {
-        std::cout << "Process of size " << process << " allocated to hole of size " << memory_list[index] << std::endl;
+        std::cout << "Process of size " << process << " allocated to hole of size " << memory_list[index]+process << std::endl;
     }
 }
 
@@ -61,7 +62,7 @@ void printList(const std::forward_list<int>& list){
 }
 
 // Task: Use functors instead of auto
-void allocate_processes(auto allocate_process, auto process_list, auto memory_list) {
+void allocate_processes(auto allocate_process, auto process_list, auto &memory_list) {
     std::cout << "Memory List: ";
     printList(memory_list);
     std::cout << std::endl;
@@ -90,6 +91,7 @@ int main() {
             process_list, 
             memory_list
         );
+        std::cout << "External Fragmentation: " << std::accumulate(memory_list.begin(), memory_list.end(), 0) << std::endl;
         std::cout << std::endl;
     }
     { // Best Fit
@@ -102,6 +104,7 @@ int main() {
         for(auto process : process_list){
             best_fit(process, memory_list, 6);
         }
+        std::cout << "External Fragmentation: " << std::accumulate(memory_list, memory_list+6, 0) << std::endl;
         std::cout << std::endl;
     }
     { // Worst Fit
@@ -117,6 +120,7 @@ int main() {
                 memory_list[0] -= process;
             }
         }
+        std::cout << "External Fragmentation: " << std::accumulate(memory_list, memory_list+6, 0) << std::endl;
         std::cout << std::endl;
     }
 }
