@@ -1,5 +1,7 @@
 #include <forward_list>
+#include <list>
 #include <iterator>
+#include <algorithm>
 #include <iostream>
 
 int first_fit_from_start(const int process, std::forward_list<int>& memory_list) {
@@ -34,6 +36,24 @@ int first_fit_from_start(const int process, std::forward_list<int>& memory_list)
 //     return -1;
 // }
 
+void best_fit(const int process, int memory_list[], const int n) {
+    std::sort(memory_list, memory_list+n);
+    int index = -1;
+    for (int i = 0; i < n; ++i){
+        if (memory_list[i] < process){
+            continue;
+        }
+        memory_list[i] -= process;
+        index = i;
+        break;
+    }
+    if (index == -1){
+        std::cout << "Process of size " << process << " could not be allocated." << std::endl;
+    } else {
+        std::cout << "Process of size " << process << " allocated to hole of size " << memory_list[index] << std::endl;
+    }
+}
+
 void printList(const std::forward_list<int>& list){
     for (auto element : list){
         std::cout << element << " ";
@@ -61,11 +81,42 @@ void allocate_processes(auto allocate_process, auto process_list, auto memory_li
 }
 
 int main() {
-    std::forward_list<int> memory_list = {200, 400, 600, 500, 300, 250};
-    std::forward_list<int> process_list = {357, 210, 468, 491};
-    allocate_processes(
-        [&memory_list](const int process){return first_fit_from_start(process, memory_list);}, 
-        process_list, 
-        memory_list
-    );
+    {
+        std::cout << "First Fit" << std::endl;
+        std::forward_list<int> memory_list = {200, 400, 600, 500, 300, 250};
+        std::forward_list<int> process_list = {357, 210, 468, 491};
+        allocate_processes(
+            [&memory_list](const int process){return first_fit_from_start(process, memory_list);}, 
+            process_list, 
+            memory_list
+        );
+        std::cout << std::endl;
+    }
+    { // Best Fit
+        std::cout << "Best Fit" << std::endl;
+        // Change of mind: Finish assignment on time with simple code
+        int memory_list[] = {200, 400, 600, 500, 300, 250};
+        int process_list[] = {357, 210, 468, 491};
+        // std::list<int> sequence_list;
+        // proxySort(memory_list, sequence_list);
+        for(auto process : process_list){
+            best_fit(process, memory_list, 6);
+        }
+        std::cout << std::endl;
+    }
+    { // Worst Fit
+        std:: cout << "Worst Fit" << std::endl;
+        int memory_list[] = {200, 400, 600, 500, 300, 250};
+        int process_list[] = {357, 210, 468, 491};
+        for(auto process : process_list){
+            std::sort(memory_list, memory_list+6, std::greater<int>());
+            if(memory_list[0] < process){
+                std::cout << "Process of size " << process << " could not be allocated." << std::endl;
+            } else {
+                std::cout << "Process of size " << process << " allocated to hole of size " << memory_list[0] << std::endl;
+                memory_list[0] -= process;
+            }
+        }
+        std::cout << std::endl;
+    }
 }
