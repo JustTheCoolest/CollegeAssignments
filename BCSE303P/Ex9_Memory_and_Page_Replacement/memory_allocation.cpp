@@ -1,4 +1,5 @@
 #include <forward_list>
+#include <iterator>
 #include <iostream>
 
 int first_fit_from_start(const int process, std::forward_list<int>& memory_list) {
@@ -33,13 +34,14 @@ int first_fit_from_start(const int process, std::forward_list<int>& memory_list)
 //     return -1;
 // }
 
-void printList(std::forward_list<int>& list){
+void printList(const std::forward_list<int>& list){
     for (auto element : list){
         std::cout << element << " ";
     }
 }
 
-void allocate_processes(int (*allocate_process)(const int, std::forward_list<int>&), std::forward_list<int>& process_list, std::forward_list<int>& memory_list) {
+// Task: Use functors instead of auto
+void allocate_processes(auto allocate_process, auto process_list, auto memory_list) {
     std::cout << "Memory List: ";
     printList(memory_list);
     std::cout << std::endl;
@@ -47,7 +49,7 @@ void allocate_processes(int (*allocate_process)(const int, std::forward_list<int
     printList(process_list);
     std::cout << std::endl;
     for(auto process : process_list){
-        int index_allocated = allocate_process(process, memory_list);
+        int index_allocated = allocate_process(process);
         if (index_allocated == -1){
             std::cout << "Process of size " << process << " could not be allocated." << std::endl;
         } else {
@@ -61,5 +63,9 @@ void allocate_processes(int (*allocate_process)(const int, std::forward_list<int
 int main() {
     std::forward_list<int> memory_list = {200, 400, 600, 500, 300, 250};
     std::forward_list<int> process_list = {357, 210, 468, 491};
-    allocate_processes(first_fit_from_start, process_list, memory_list);
+    allocate_processes(
+        [&memory_list](const int process){return first_fit_from_start(process, memory_list);}, 
+        process_list, 
+        memory_list
+    );
 }
