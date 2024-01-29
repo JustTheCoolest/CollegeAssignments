@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <svg width = "100" height = "120" style="border: 2px solid black; margin-left:15px; background-color:#E0E0E0;">
+            <!-- <path d = "M 70 35 q -5 35 -15 50 q -10 80 -20 -5 q 16 -10 33 -47 Z" fill = "red" />
+            <path d = "M 67.5 32 q -45 30 -45 45 Z" fill="red"></path> -->
+            <circle cx="50" cy="60" r="45" fill="red"/>
+            <circle cx="45" cy = "65" r = "45" fill = "white" />
+            <ellipse cx = "10" cy = "30" rx = "60" ry = "35" fill = "red" transform = "rotate(-55, 70, 30)"/>
+            <ellipse cx="23" cy="30" rx="47" ry="12" fill="white" transform = "rotate(-50, 70, 30)"/>
+            <path d="M 72 28 l -15 -20 l 40 20 Z" fill="white"/>
+            <circle cx = "70" cy = "30" r = "5" fill = "white"/>
+            <circle cx="50" cy="60" r="93" fill="none" stroke="#E0E0E0" stroke-width="99"/>
+
+            <!-- <circle cx="73" cy="20" r="1"/> -->
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <!-- <polygon points="10 40 70 40 80 60" rx="10" stroke-linejoin = "round"/> -->
+            <path d="M 70 40 L 85 57 L 45 50 Z" stroke="#9a9793" stroke-width="8px" transform="translate(-2, 5)" stroke-linejoin="round"/>
+            <path d="M 10 55 l -4 -13 L 25 55 Z" stroke="#c0bcb7" fill="c0bcb7" stroke-width="8px" stroke-linejoin="round" transform="translate(5, -3)"/>
+            <ellipse cx="40" cy="50" rx="10" ry="5" transform="rotate(-35, 40, 50) translate(32, 40) scale(0.8)" fill="blue"/>
+            <ellipse cx="50" cy="50" rx="45" ry="15" transform="rotate(-15, 50, 50)" fill="#d3cac1"/>
+            <path d = "M 10 40 L 55 40 L 45 47 Z" stroke-linejoin = "round" fill="#9a9793" stroke="#9a9793" stroke-width="8px" transform = "translate(-2, 5)"/>
+            <rect x="5" y="54" height="6" width="12" transform="rotate(12, 5, 50)" fill="#9a9793" rx="2"/>
+            <ellipse cx="40" cy="50" rx="10" ry="5" transform="rotate(-35, 40, 50) translate(-9, -10)" fill="blue"/>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <rect x="5" y="60" width = "50" height="5" transform="rotate(-45, 5, 60)" fill="pink"/>
+            <rect x="5" y="60" width = "50" height="5" transform="translate(50, 15) rotate(-45, 5, 60)" fill="pink"/>
+            <ellipse cx="45" cy="35" rx="10" ry="5" fill="black" stroke="pink" stroke-width="4" transform=" scale(1.30) rotate(17, 45, 35) translate(-10, -10)"/>
+            <ellipse cx="45" cy="35" rx="10" ry="5" fill="black" stroke="pink" stroke-width="4" transform=" scale(1.30) rotate(17, 45, 35) translate(15, -10)"/>
+            <rect x="60" y="30" height="4" width="8" fill="pink" transform="translate(13, -16.5) rotate(17)"/>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <polygon points="50 0 10 90 100 30 0 30 90 90" fill="#efb164" transform="rotate(-20, 50, 50) translate(10, 5) scale(0.8)"/>
+            <defs>
+                <circle id="spot" cx="50" cy="50" r="5" fill="#f8e2b2"/>
+            </defs>
+            <use href="#spot" x="-3" y="-8"/>
+            <use href="#spot" x="-10" y="-26"/>
+            <use href="#spot" x="-25" y="-7"/>
+            <use href="#spot" x="12" y="-20"/>
+            <use href="#spot" x="-10" y="10"/>
+            <use href="#spot" x="12" y="0"/>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <rect x="55" y="25" stroke="black" fill="none" stroke-width="3px" width="5" height="10"/>
+            <rect x="35" y="40" width="30" height="40" fill="orange"/>
+            <ellipse cx="50" cy="40" rx="15" ry="10" fill="orange"/>
+            <path d="M 50 31 q 12 0 10 50" stroke="red" stroke-width="3px" fill="none"/>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <g transform="translate(0, -50) scale(1.5)">
+                <ellipse cx="55" cy="55" rx="3" ry="2"/>
+                <ellipse cx="40" cy="60" rx="10" ry="5" fill="pink" transform="translate(-20) scale(1.3)"/>
+                <path d="M 30 80 q 0 -15 7 -15" stroke="pink" fill="none" stroke-width="3px" transform="translate(-2, -35) scale(1.4)"/>
+                <ellipse cx="50" cy="55" rx="5" ry="4" fill="pink"/>
+                <circle cx="50" cy="55" r="2" stroke="white"/>
+            </g>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black;">
+            <defs>
+                <g id="tree">
+                    <rect width="10" height="60" fill="brown" x="20" y=" 20" />
+                    <polygon points="50 0 10 90 100 30 0 30 90 90" fill="green" transform="scale(0.5)"/>
+                </g>
+            </defs>
+            <use href="#tree" x="-10" y="20" transform=" rotate(-20)"/>
+            <use href="#tree" x="-10" y="20" transform="translate(50) rotate(20, 50, 50)"/>
+        </svg>
+        <svg width = "100px" height = "100px" style="border: 2px solid black; background-color:yellow;">
+            <g transform="rotate(30, 50, 50)">
+                <rect width="10" height="60" fill="brown" x="45" y=" 35" />
+                <rect x="30" y="10" width="40" height="30" fill="pink" rx="10"/>
+                <rect height="45" width="40" x="30" y="30" fill="white"/>
+            </g>
+        </svg>
+    </body>
+</html>
