@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form>
+            <label for = "email">Email:</label>
+            <input type = "email" id="email" pattern="^.*gmail.com$" oninput="this.setCustomValidity('')" oninvalid="this.setCustomValidity('Only emails from GMail are accepted')"/>
+            <br>
+            <label for = "password">Password:</label>
+            <input type = "password" id="password"/>
+            <br>
+            <label for = "satisfactionLevel">Satisfaction Level:</label>
+            <input type = "range" id="satisfactionLevel" min="0" max="10" step="1" value="10"/>
+            <br>
+            <input type = "submit" value = "Submit">
+        </form>
+    </body>
+</html>

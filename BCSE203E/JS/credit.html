@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function validateData(){
+            messenger = document.getElementById("Message");
+            messenger.style.color = "red";
+            name = document.getElementById("name").value;
+            phone = document.getElementById("phone").value;
+            email = document.getElementById("email").value;
+            cc_name = document.getElementById("cc-name").value;
+            cc_number = document.getElementById("cc-number").value;
+            if(name == ""){
+                messenger.innerHTML = "Name cannot be empty";
+                return false;
+            }
+            if(phone == ""){
+                messenger.innerHTML = "Phone number cannot be empty";
+                return false;
+            }
+            if(email == ""){
+                messenger.innerHTML = "Email cannot be empty";
+                return false;
+            }
+            if(cc_name == ""){
+                messenger.innerHTML = "Credit Card Name cannot be empty";
+                return false;
+            }
+            if(cc_number == ""){
+                messenger.innerHTML = "Credit Card Number cannot be empty";
+                return false;
+            }
+            if(/^[A-Za-z ]*$/.test(name) == false){
+                messenger.innerHTML = "Name can only contain alphabets";
+                return false;
+            }
+            if(/^[0-9]{12}$/.test(phone) == false){
+                messenger.innerHTML = "Phone number must be 12 digits (only numbers) long";
+                return false;
+            }
+            if(/^[A-Za-z0-9.]+@([A-Za-z0-9]*[.])*[A-Za-z]*$/.test(email) == false){
+                messenger.innerHTML = "Email must be in the format: abc@xyz.com";
+                return false;
+            }
+            if(/^[0-9]{15}/.test(cc_number) == false){
+                messenger.innerHTML = "Credit Card Number must be 15 digits long";
+                return false;
+            }
+            messenger.innerHTML = "Data is valid";
+            messenger.style.color = "green";
+            return true;
+        }
+    </script>
+    <p id="Message"> Enter Data </p>
+    <form onsubmit = "return validateData()">
+        <p>
+            <label for="name"> Name: </label>
+            <input id="name" type="text"/>
+        </p>
+        <p> 
+            <label for="phone"> Phone Number: </label>
+            <input id="phone" type="text"/>
+        </p>
+        <p>
+            <label for="email"> Email: </label>
+            <input id="email" type="text"/>
+        </p>
+        <p>
+            <label for="cc-name"> Credit Card Name: </label>
+            <input id="cc-name" type="text"/>
+        </p>
+        <p>
+            <label for="cc-number"> Credit Card Number: </label>
+            <input id="cc-number" type="text"/>
+        </p>
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>

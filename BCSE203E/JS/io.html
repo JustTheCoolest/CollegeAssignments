@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BCSE203E</title>
+    <script>
+function sqrt(number){
+    return number ** (1/2);
+}
+
+function swap(a, b){
+    return [b, a];
+}
+
+function c2f(c){
+    return (c * 9.0/5.0) + 32;
+}
+
+function primes(lower_limit, upper_limit){
+    for(let i=lower_limit; i<upper_limit+1; ++i){
+        let flag = true;
+        for(let j=2; j<sqrt(i); ++j){
+            if(i%j == 0){
+                flag = false;
+                break;
+            }
+        }
+        if(flag){
+            console.log(i);
+        }
+    }
+}
+
+function table(number){
+    for(let i=1; i<11; ++i){
+        console.log(`${number} * ${i} = ${number*i}`);
+    }
+}
+
+    </script>
+</head>
+<body>
+    <script>
+        
+console.log(`Square root of 4 is ${sqrt(4)}`);
+let a=4, b=5;
+[a, b] = swap(a, b);
+console.log(`Swapping 4 and 5 gives ${a}, ${b}`);
+console.log(`Celsius 100 in Fahrenheit is ${c2f(100)}`);
+console.log(`Prime numbers between 30 and 50 are`);
+primes(30, 50);
+console.log(`Table of 5 is`);
+table(5);
+</script>
+</body>
+</html>
