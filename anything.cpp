@@ -1,55 +1,24 @@
-#include <stdio.h>
-#include <stddef.h>
-#include <ctype.h>
+#include <pthread.h>
+#include <iostream>
 
-int stack[100], top=-1;
+using namespace std;
 
-void push(int element, int stack[], int top){
-    stack[++top] = element;
-}
-
-int pop(int stack[], int top){
-    return stack[top--];
-}
-
-int peek(int const stack[], int const top){
-    return stack[top];
-}
-
-int getRank(char op){
-    static char ops[] = {'(', '^', '/', '*', '-', '+', ')'};
-    for(int i=0; i<7; ++i){
-        if(ops[i]==op){
-            return i;
-        }
+void* thread1(void* a_ptr){
+    int& a = *(static_cast<int*>(a_ptr));
+    while(true){
+        cout << a << " ";
     }
 }
 
-// int stacks are compatible with chars too
+void thread2(int& a){
+    while(true){
+        ++a;
+    }
+}
 
 int main(){
-    char *in;
-    size_t n=0;
-    getline(&in, &n, stdin);
-    printf("%s", in);
-    char *traverser = in;
-    while(*traverser != '\0' && *traverser != '\n'){
-        if(isdigit(*traverser)){
-            printf("%c", *traverser);
-        }
-        else{
-            // Entering one is higher : Retain
-            int traverser_priority = getRank(*traverser);
-            while(traverser_priority <= getRank(peek(stack, top))){
-                printf("%c", pop(stack, top));
-            }
-            if(traverser_priority==6){
-                pop(stack, top);
-            }
-            else{
-                push(*traverser, stack, top);
-            }
-        }
-        ++traverser;
-    }
+    int a = 0;
+    pthread_t thread;
+    pthread_create(&thread, nullptr, thread1, &a);
+    thread2(a);
 }

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border: 1px solid #ddd;
+        }
+
+        nav button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        nav button:hover {
+            background-color: #45a049;
+        }
+
+        main {
+            display: flex;
+        }
+
+        article {
+            flex: 1;
+            padding: 10px;
+        }
+
+        article p {
+            text-align: justify;
+        }
+
+        header {
+            text-align: center;
+            padding: 10px;
+        }
+
+        #articles {
+            flex: 1;
+        }
+
+        .article_row {
+            display: flex;
+        }
+
+        #advertisement {
+            flex: 0.33;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            margin: 10px 0;
+        }
+    </style>
+    <script>
+        let publicationsDictionary = {};
+        let publicationDates;
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Newspaper Title</h1>
+        <nav id="date-navigation">
+            <button id="prev-date">Previous</button>
+            <span id="current-date"> 0000-00-00 </span>
+            <button id="next-date">Next</button>
+        </nav>
+    </header>
+    <main>
+        <section id="articles">
+        </section>
+        <section id="advertisement" class="column">
+            <h2>Advertisement</h2>
+            <p>Your ad content here...</p>
+        </section>
+    </main>
+    <script>
+        function renderPublication(date) {
+            document.getElementById('current-date').textContent = date;
+
+            let articles = publicationsDictionary[date].articles;
+            let advertisement = publicationsDictionary[date].advertisement;
+
+            let articlesSection = document.getElementById('articles');
+            let numRows = Math.ceil(articles.length / 3);
+
+            articlesSection.innerHTML = '';
+
+            for (let i = 0; i < numRows; i++) {
+                let row = document.createElement('div');
+                row.className = 'article_row';
+
+                for (let j = i * 3; j < (i + 1) * 3 && j < articles.length; j++) {
+                    let article = document.createElement('article');
+                    let title = document.createElement('h2');
+                    let author = document.createElement('h4');
+                    let content = document.createElement('p');
+
+                    title.textContent = articles[j].getElementsByTagName('title')[0].textContent;
+                    author.textContent = 'Author: ' + articles[j].getElementsByTagName('author')[0].textContent;
+                    content.textContent = articles[j].getElementsByTagName('content')[0].textContent;
+
+                    article.appendChild(title);
+                    article.appendChild(author);
+                    article.appendChild(content);
+
+                    row.appendChild(article);
+                }
+
+                articlesSection.appendChild(row);
+            }
+
+            let advertisementSection = document.getElementById('advertisement');
+            advertisementSection.getElementsByTagName('h2')[0].textContent = advertisement.getElementsByTagName('title')[0].textContent;
+            advertisementSection.getElementsByTagName('p')[0].textContent = advertisement.getElementsByTagName('content')[0].textContent;
+            advertisementSection.style.flex = advertisement.getElementsByTagName('flex_ratio')[0].textContent;
+        }
+    </script>
+    <script>
+        fetch('data.xml')
+            .then(response => response.text())
+            .then(data => {
+                let parser = new DOMParser();
+                let xml = parser.parseFromString(data, 'text/xml');
+
+                let allPublications = xml.getElementsByTagName('publication');
+                for(let i = 0; i < allPublications.length; i++) {
+                    let date = allPublications[i].getAttribute('date');
+                    let articles = allPublications[i].getElementsByTagName('article');
+                    let advertisement = allPublications[i].getElementsByTagName('advertisement')[0];
+                    publicationsDictionary[date] = {
+                        articles: articles,
+                        advertisement: advertisement
+                    };
+                    // console.log(publicationsDictionary[date])
+                }
+                
+                console.log(publicationsDictionary);
+                publicationDates = Object.keys(publicationsDictionary);
+                publicationDates.sort();
+                console.log(publicationDates);
+                let currentDate = publicationDates[publicationDates.length - 1];
+                // console.log(currentDate);
+                renderPublication(currentDate);
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+    <script>
+        document.getElementById('prev-date').addEventListener('click', function() {
+            let currentDate = document.getElementById('current-date').textContent;
+            let currentIndex = publicationDates.indexOf(currentDate);
+            if (currentIndex > 0) {
+                let prevDate = publicationDates[currentIndex - 1];
+                renderPublication(prevDate);
+            }
+        });
+
+        document.getElementById('next-date').addEventListener('click', function() {
+            let currentDate = document.getElementById('current-date').textContent;
+            let currentIndex = publicationDates.indexOf(currentDate);
+            if (currentIndex < publicationDates.length - 1) {
+                let nextDate = publicationDates[currentIndex + 1];
+                renderPublication(nextDate);
+            }
+        });
+    </script>
+</body>
+</html>

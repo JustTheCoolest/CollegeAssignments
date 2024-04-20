@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Online Snooker Game Booking System</h2>
+
+<form id="bookingForm">
+    <label for="name">Name:</label><br>
+    <input type="text" id="name" name="name"><br>
+    <label for="age">Age:</label><br>
+    <input type="text" id="age" name="age"><br>
+    <label for="hours">Number of Hours:</label><br>
+    <input type="text" id="hours" name="hours"><br>
+    <label for="address">Address:</label><br>
+    <input type="text" id="address" name="address"><br>
+    <label for="idCard">Identity Card Number:</label><br>
+    <input type="text" id="idCard" name="idCard"><br>
+    <input type="button" value="Add to Queue" onclick="addToQueue()">
+    <input type="button" value="Leave Zone" onclick="leaveZone()">
+</form>
+
+<h1> Queue </h1>
+<div id="queue"></div>
+
+<h1 id="message"></p>
+
+<script>
+let queue = [];
+let registered = {};
+
+function addToQueue() {
+    let customer = {
+        name: document.getElementById('name').value,
+        age: document.getElementById('age').value,
+        hours: document.getElementById('hours').value,
+        address: document.getElementById('address').value,
+        idCard: document.getElementById('idCard').value,
+    };
+    
+    if (!registered[customer.idCard]) {
+        queue.push(customer);
+        registered[customer.idCard] = customer;
+
+        let p = document.createElement('p');
+        p.id = customer.idCard;
+        p.innerText = customer.name;
+        document.getElementById('queue').appendChild(p);
+    }
+}
+
+function leaveZone() {
+    let idCardToRemove = document.getElementById('idCard').value;
+    
+    for (let i = 0; i < queue.length; i++) {
+        if (queue[i].idCard === idCardToRemove) {
+            document.getElementById('message').innerText = 'Welcome Back ' + queue[i].name + '! You got 100 points!';
+            queue.splice(i, 1);
+            delete registered[idCardToRemove];
+
+            let pToRemove = document.getElementById(idCardToRemove);
+            document.getElementById('queue').removeChild(pToRemove);
+            break;
+        }
+    }
+
+    if (queue.length === 0) {
+        document.getElementById('message').innerText = 'Queue is empty';
+    }
+}
+</script>
+</body>
+</html>

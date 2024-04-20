@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<newspaper>
+    <publication date="2021-01-01">
+        <article>
+            <title>Article Title 1</title>
+            <author>John Doe</author>
+            <content>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</content>
+        </article>
+        <article>
+            <title>Article Title 2</title>
+            <author>Jane Doe</author>
+            <content>Vestibulum cursus, mauris nec blandit hendrerit, nulla turpis posuere libero, quis posuere lectus neque eget dolor.</content>
+        </article>
+        <article>
+            <title>Article Title 3</title>
+            <author>Jim Doe</author>
+            <content>Curabitur lacinia tristique imperdiet. Aenean aliquam purus non dolor semper, a semper turpis semper.</content>
+        </article>
+        <article>
+            <title>Article Title 4</title>
+            <author>Jane Doe</author>
+            <content> Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque error hic excepturi temporibus amet molestias quis consectetur eaque delectus id aut quidem animi sunt perferendis alias, esse unde fugit ipsa!</content>
+        </article>
+        <advertisement>
+            <title>Advertisement Title 1</title>
+            <content>Buy one get one free</content>
+            <flex_ratio> 0.7 </flex_ratio>
+        </advertisement>
+    </publication>
+    <publication date="2022-01-02">
+        <article>
+            <title>Modified Article Title 1</title>
+            <author>Modified Author</author>
+            <content>Modified content for the article.</content>
+        </article>
+        <article>
+            <title>Modified Article Title 2</title>
+            <author>Modified Author</author>
+            <content>Modified content for the article.</content>
+        </article>
+        <advertisement>
+            <title>Modified Advertisement Title</title>
+            <content>Modified advertisement content</content>
+            <flex_ratio>2</flex_ratio>
+        </advertisement>
+    </publication>
+</newspaper>

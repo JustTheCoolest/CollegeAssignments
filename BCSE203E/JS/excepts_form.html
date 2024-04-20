@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function update(){
+            console.log("Updating...");
+            let id_type = document.forms['f']['proof_type'].value;
+            console.log(id_type);
+            let id_obj = document.getElementById('proof_id');
+            id_obj.pattern = ".*";
+            switch(id_type){
+                case 'voter': 
+                    id_obj.minLength, id_obj.maxLength = 10, 10;
+                    break;
+                case 'driving':
+                    id_obj.minLength, id_obj.maxLength = 17, 17;
+                    id_obj.pattern = "[A-Z]{2}[0-9]{15}";
+                    break;
+                case 'ration':
+                    id_obj.minLength, id_obj.maxLength = 10, 10;
+                    break;
+                default:
+                    id_obj.minLength, id_obj.maxLength = 0, 0;
+                    break;
+            }
+        }
+    function validate() {
+        console.log("Validating");
+        try {
+            let dob = document.forms['f']['dob'].value;
+            let dateParts = dob.split("/");
+            let day = parseInt(dateParts[1]);
+            let month = parseInt(dateParts[0]);
+            let year = parseInt(dateParts[2]);
+
+            let date = new Date(year, month - 1, day);
+
+            if (!(date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day)) {
+                throw "Invalid Date of Birth";
+            }
+        } catch (e) {
+            alert(e.toString());
+            return false;
+        }
+        return true;
+    }
+    </script>
+    <form action="" onsubmit="return validate()" name="f">
+        <p>
+            <label for="rec"> Resident </label>
+            <input required type="radio" name="residency_status" id="rec">
+            <label for="non"> Non Resident </label>
+            <input required type="radio" name="residency_status" id="non">
+        </p>
+        <p>
+            <label for="name"> Full Name </label>
+            <input required type="text" name="full_name" id="name" minlength="5" maxlength="20">
+        </p>
+        <p>
+            <label for="male"> Male </label>
+            <input required type="radio" type="gender" id = "male">
+            <label for="female"> Female </label>
+            <input required type="radio" type="gender" id="female">
+            <label for="trans"> Transgender </label>
+            <input required type="radio" type="gender" id="trans">
+        </p>
+        <p>
+            <label for="dob"> Age (in MM/DD/YYYY) </label>
+            <input required type="text" name="dob" id="dob">
+        </p>
+        <p>
+            <label for="father"> Father's Name </label>
+            <input required type="text" name="father_name" id="father" minlength="5" maxlength="20">
+        </p>
+        <p>
+            <label for="mother"> Mother's Name </label>
+            <input required type="text" name="mother_name" id="mother" minlength="5" maxlength="20">
+        </p>
+        <p>
+            <label for="proof_type"> Proof Type </label>
+            <select required name="proof_type" id="proof_type" onchange="update()">
+                <option value=""> Select </option> 
+                <option value="voter"> Voter ID </option>
+                <option value="driving"> Driving License </option>
+                <option value="ration"> Ration Card </option>
+            </select>
+        </p>
+        <p>
+            <label for="proof_id"> Proof ID </label>
+            <input required type="text" name="proof_id" id="proof_id" maxlength="0">
+        </p>
+        <p>
+            <label for="phone"> Phone Number </label>
+            <input type="number" id="phone" required minlength="10" maxlength="10">
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+    </form>
+</body>
+</html>

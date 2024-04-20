@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        let workouts = {"running": 2000, "swimming":8000};
+        let records = [];
+        function validateInputs(type, duration, intensity){
+            if(!workouts[type.toLowerCase()]){
+                alert("Invalid workout type");
+                return false;
+            }
+            if(!(duration>0)){
+                alert("Invalid duration");
+                return false;
+            }
+            if(!(1 <= intensity && intensity <= 10)){
+                alert("Invalid intensity");
+                return false;
+            }
+            return true;
+        }
+        function calculateCaloriesBurnt(type, duration, intensity){
+            return workouts[type] * duration * intensity/10;
+        }
+        function getInputs(){
+            do{
+                type = prompt(`Type of workout (only ${Object.keys(workouts).join(", ")}): `);
+                duration = prompt("Duration of workout: ")
+                intensity = prompt("Intnesity of workout: ")
+            }while(!validateInputs(type, duration, intensity))
+            records.push([type, duration, intensity]);
+            alert(`Calories burnt: ${calculateCaloriesBurnt(type, duration, intensity)}`)
+        }
+        function summarise(){
+            the_div = document.getElementById('workouts');
+            records.forEach(record => {
+                the_div.innerHTML += `<p>${record[0]}: ${calculateCaloriesBurnt(record[0], record[1], record[2])}</p>`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <button onclick="getInputs()"> Add Workout </button>
+    <button onclick="summarise()"> Summarise Workouts </button>
+    <div id="workouts"></div>
+</body>
+</html>
