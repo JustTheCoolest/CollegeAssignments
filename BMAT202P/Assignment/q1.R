@@ -49,30 +49,28 @@ marks_columns_range_in_quantiles_table = 2:(2+length(marks_columns_range)-1)
 
 for(subject in subjects){
     cut_off = quantiles_table[[4, subject]]; # [[]]
-    print("Students who are in the top 1% in subject: ", subject)
+    print(paste("Students who are in the top 1% in subject: ", subject))
     # Possible imporvement: Sort by rank
-    # print([student for student in students where students[subject] >= cut_off])
-    student_indices = which(students[[subject]] >= cut_off) # >= or >
-    for(i in student_indices){
-        print(students[[i, "Name"]])
-    }
-    print();
+    student_indices = which(students[[subject]] > cut_off)
+    # Task: Study the implementation details of the quantiles, and choose the method which ensures we get the exact number of students
+    sapply(student_indices, function(i) print(students[[i, "Name"]]))
+    cat('\n')
 }
 
-max_coorealtion = -2;
-max_correlation_subjects; #declare
+max_correlation = -2;
+max_correlation_subjects <- c('', '')
 for (subject1 in subjects){
     for (subject2 in subjects){ # rewrite inner loop to continue after outer loop
         if(subject1 == subject2){
-            continue;
+            next;
         }
-        correlation = rank.corr(subject1, subject2)
-        if(correlation > max_coorealtion){
-            max_coorealtion = correlation
+        correlation = cor.test(students[[subject1]], students[[subject2]], method ='spearman')
+        if(correlation$estimate > max_correlation){
+            max_correlation = correlation$estimate;
             max_correlation_subjects = c(subject1, subject2)
         }
         # Bug : Equal correlations are not handled
     }
 }
-print(paste("The performance is most similar between ", max_correlation_subjects, " with correlation value: ", max_coorealtion))
+print(paste("The performance is most similar between ", paste(max_correlation_subjects, collapse = " and ") , " with correlation value: ", max_correlation))
 
