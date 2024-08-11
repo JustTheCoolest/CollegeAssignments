@@ -64,23 +64,32 @@ def merge(left, right):
     return result
 
 import pandas as pd
-
-df = pd.DataFrame(columns=['Array Length', 'Max String Length', 'Execution Time'])
-
 import time
+import random
+import string
 
-array = ["bose", "boat", "apple", "app", "zyte", "anana"]
+df = pd.DataFrame(columns=['Array Length', 'Max String Length', 'Execution Time (x10e-7)'])
 
-start_time = time.time()
-sorted_array = merge_sort(array)
-end_time = time.time()
+def generate_random_string(length):
+    return ''.join(random.choice(string.ascii_lowercase) for _ in range(length))
 
-execution_time = end_time - start_time
-array_length = len(array)
+for array_length in range(1, 10000, 1000):
+    for max_string_length in range(1, 10000, 1000):
+        array = [generate_random_string(max_string_length) for _ in range(array_length)]
+        # Flag: There is no variation in string length
+        
+        start_time = time.time()
+        sorted_array = merge_sort(array)
+        end_time = time.time()
 
-max_string_length = max(len(s) for s in array)
+        execution_time = end_time - start_time
 
-df.loc[0] = [array_length, max_string_length, execution_time]
+        df.loc[len(df)] = [array_length, max_string_length, execution_time * 10**7]
+
+pd.set_option('display.max_rows', None)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', None)
+pd.set_option('display.max_colwidth', None)
 
 print(df)
 
