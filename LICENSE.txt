@@ -1,0 +1,1 @@
+Although the majorityyy of the content in this repo is original work of mine, some amount of content is taken from other sources when the assignment question requires us to do so. I claim no ownership of such code, so please take care of that. Other than that, you are allowed to use my code
