@@ -3,6 +3,9 @@
 #include <iostream>
 using namespace std;
 
+int total_calls = 0;
+int max_depth = 0;
+
 // Merge two subarrays L and M into arr
 void merge(int arr[], int p, int q, int r) {
   
@@ -69,16 +72,16 @@ int find_m(int arr[], int l , int r){
 }
 
 // Divide the array into two subarrays, sort them and merge them
-void mergeSort(int arr[], int l, int r) {
+void mergeSort(int arr[], int l, int r, int depth = 0) {
+  total_calls++;
+  max_depth = max(max_depth, depth);
+
   if (l < r) {
-    // m is the point where the array is divided into two subarrays
-    // int m = l + (r - l) / 2;
     int m = find_m(arr, l, r);
 
-    mergeSort(arr, l, m);
-    mergeSort(arr, m + 1, r);
+    mergeSort(arr, l, m, depth + 1);
+    mergeSort(arr, m + 1, r, depth + 1);
 
-    // Merge the sorted subarrays
     merge(arr, l, m, r);
   }
 }
@@ -92,12 +95,14 @@ void printArray(int arr[], int size) {
 
 // Driver program
 int main() {
-  int arr[] = {6, 5, 12, 10, 9, 1};
+  int arr[] = {6, 5, 12, 10, 9, 1, 2843, 238, 352, -12414, 324, 3, 99, 0, 12};
   int size = sizeof(arr) / sizeof(arr[0]);
 
   mergeSort(arr, 0, size - 1);
 
   cout << "Sorted array: \n";
   printArray(arr, size);
+  cout << "Total recursive calls: " << total_calls << "\n";
+  cout << "Maximum recursion depth: " << max_depth << "\n";
   return 0;
 }
