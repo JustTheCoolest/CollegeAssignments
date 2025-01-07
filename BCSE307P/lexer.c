@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Critical: Bug in differentiating between the dereference operator and the multiplication operator
+
 /*
 Not Implemented:
 - Multiline comments
@@ -10,6 +12,7 @@ Not Implemented:
 - Differentiating between < and <= and so on
 - Validation of identifier and value for #define, and validation of module name for #include
 - Validation of end of line for preprocessor directives
+- A comprehensive not-implemented list is not implemented
 */
 
 /*
@@ -38,9 +41,17 @@ int isIndentifierChar(char c){
   return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c=='_';
 }
 
+int isEscapable(char c){
+  return (c=='n' || c=='0' || c=='\"' || c=='\'');
+}
+
 void iterate(int *i, char curr, char *text){
   int initial = *i;
   switch(curr){
+    case '\0':
+    printf("End of compilation, yay!");
+    ++*i;
+    return;
 
     case ' ':
     case '\n':
@@ -90,17 +101,18 @@ void iterate(int *i, char curr, char *text){
       while(text[*i] != end){
         if(text[*i] == '\\'){
           ++*i;
-          if(text[*i]!='n' && text[*i]!='0'){
+          if(!isEscapable(text[*i])){
             error(*i);
           }
           // Flag: Printing does not differentiate if this exact pharse exists in the string.
-          printf("<escape_sequence:%c%c>", text[*(i-1)], text[*i]);
+          printf("<escape_sequence:%c%c>", text[*i-1], text[*i]);
           ++*i;
           continue;
         }
         printf("%c", text[*i]);
         ++*i;
       }
+      ++*i;
       printf("\n");
       return;
     }
@@ -111,7 +123,7 @@ void iterate(int *i, char curr, char *text){
       ++*i;
       if(text[*i] == '\\'){
         ++*i;
-        if(text[*i]!='n' && text[*i]!='0'){
+        if(!isEscapable(text[*i])){
           error(*i);
         }
         // Flag: Printing does not differentiate if this exact pharse exists in the string.
@@ -201,7 +213,7 @@ void iterate(int *i, char curr, char *text){
       // printf("Checking double char...\n");
       // printf("%c ", curr);
 
-      char *doubleCharOperators[] = {"==x", "++=x", "--=x", "<=x", ">=x", "!="};
+      char *doubleCharOperators[] = {"==x", "++=x", "--=x", "<=x", ">=x", "!=x", "&&x", "||x"};
       for(int j=0; j<sizeof(doubleCharOperators)/sizeof(char*); ++j){
         if(curr != doubleCharOperators[j][0]){
           // printf("%c", doubleCharOperators[j][0]);
