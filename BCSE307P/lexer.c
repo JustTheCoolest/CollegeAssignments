@@ -13,11 +13,17 @@ Not Implemented:
 - Validation of identifier and value for #define, and validation of module name for #include
 - Validation of end of line for preprocessor directives
 - A comprehensive not-implemented list is not implemented
+- For unambigious tokens such as +=, unexpected occurences are not checked
 */
 
 /*
 Rewrite Suggestions:
 - Increment the text variable itself, instead of the separate int *i
+*/
+
+/*
+Mistakes:
+- Operators and keywords must be labelled as an the category when tokenising.
 */
 
 int streaming_strcmp(char *ar1, char *ar2, int len){
@@ -42,14 +48,41 @@ int isIndentifierChar(char c){
 }
 
 int isEscapable(char c){
-  return (c=='n' || c=='0' || c=='\"' || c=='\'');
+  return (c=='n' || c=='0' || c=='\"' || c=='\'' || c=='t');
+}
+
+// Flag: Refactor this func and the doubleCharOperators handler
+void iteratePostIdentifier(int *i, char *text){
+  while(text[*i]==' ') ++*i;
+  char *ambiguousOperators[] = {"*=x", "/=x"};
+  for(int j=0; j<sizeof(ambiguousOperators)/sizeof(char*); ++j){
+    if(text[*i] != ambiguousOperators[j][0]){
+      continue;
+    }
+    ++*i;
+    char next = text[*i];
+    char *iterator = ambiguousOperators[j];
+    while(*iterator != 'x' && *iterator != '\0'){
+      if(*iterator == next){
+        printf("%c%c\n", ambiguousOperators[j][0], next);
+        ++*i;
+        return;
+      }
+      ++iterator;
+    }
+    if(*iterator=='x'){
+      printf("%c\n", ambiguousOperators[j][0]);
+      return;
+    }
+    error(*i);
+  }
 }
 
 void iterate(int *i, char curr, char *text){
   int initial = *i;
   switch(curr){
     case '\0':
-    printf("End of compilation, yay!");
+    printf("End of compilation, yay!\n");
     ++*i;
     return;
 
@@ -73,8 +106,7 @@ void iterate(int *i, char curr, char *text){
         return;
       }
       else{
-        printf("division_operator\n");
-        return;
+        error(*i);
       }
     }
 
@@ -270,6 +302,7 @@ void iterate(int *i, char curr, char *text){
           ++*i;
         }
         printf("\n");
+        iteratePostIdentifier(i, text);
         return;
       }
 
@@ -280,9 +313,9 @@ void iterate(int *i, char curr, char *text){
 
 void lex(char* text){
     int i=0;
-    char curr;
+    char curr = 'a';
     while(curr != '\0'){
-        char curr = text[i];
+        curr = text[i];
         iterate(&i, curr, text);
     }
 }
