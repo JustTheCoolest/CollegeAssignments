@@ -89,7 +89,14 @@ void iterate(int *i, char curr, char *text){
       ++*i;
       while(text[*i] != end){
         if(text[*i] == '\\'){
-          error(*i);
+          ++*i;
+          if(text[*i]!='n' && text[*i]!='0'){
+            error(*i);
+          }
+          // Flag: Printing does not differentiate if this exact pharse exists in the string.
+          printf("<escape_sequence:%c%c>", text[*(i-1)], text[*i]);
+          ++*i;
+          continue;
         }
         printf("%c", text[*i]);
         ++*i;
@@ -99,13 +106,26 @@ void iterate(int *i, char curr, char *text){
     }
 
     case '\'': {
+      // Flag: Refactor the common code with the string case into a common function
       printf("character ");
-      printf("%c", text[*i+1]);
+      ++*i;
+      if(text[*i] == '\\'){
+        ++*i;
+        if(text[*i]!='n' && text[*i]!='0'){
+          error(*i);
+        }
+        // Flag: Printing does not differentiate if this exact pharse exists in the string.
+        printf("<escape_sequence:%c%c>", text[*i-1], text[*i]);
+      }
+      else{
+        printf("%c", text[*i+1]);
+      }
       printf("\n");
-      if(text[*i+2] != '\''){
+      ++*i;
+      if(text[*i] != '\''){
         error(*i);
       }
-      *i += 3;
+      ++*i;
       return;
     }
 
@@ -181,7 +201,7 @@ void iterate(int *i, char curr, char *text){
       // printf("Checking double char...\n");
       // printf("%c ", curr);
 
-      char *doubleCharOperators[] = {"==x", "++=x", "--=x", "<=x", ">=x"};
+      char *doubleCharOperators[] = {"==x", "++=x", "--=x", "<=x", ">=x", "!="};
       for(int j=0; j<sizeof(doubleCharOperators)/sizeof(char*); ++j){
         if(curr != doubleCharOperators[j][0]){
           // printf("%c", doubleCharOperators[j][0]);
@@ -198,7 +218,6 @@ void iterate(int *i, char curr, char *text){
           }
           ++iterator;
         }
-        printf("%c\n", *iterator);
         if(*iterator=='x'){
           printf("%c\n", curr);
           return;
@@ -235,7 +254,7 @@ void iterate(int *i, char curr, char *text){
       if(isIndentifierChar(curr)){
         printf("identifier ");
         while(isIndentifierChar(text[*i])){
-          printf("%c", curr);
+          printf("%c", text[*i]);
           ++*i;
         }
         printf("\n");
