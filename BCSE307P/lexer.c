@@ -2,8 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Flag: Input has to be given/processed as raw string, to be faithful 
-
 /*
 Not Implemented:
 - Multiline comments
@@ -69,21 +67,21 @@ void iterate(int *i, char curr, char *text){
       }
     }
 
-    case '+':
-    case '-':
-    case '=': {
-      char character = curr;
-      if(text[*i+1]==character){
-        printf("%c%c\n", character, character);
-        *i += 2;
-        return;
-      }
-      else{
-        printf("%c\n", character);
-        ++*i;
-        return;
-      }
-    }
+    // case '+':
+    // case '-':
+    // case '=': {
+    //   char character = curr;
+    //   if(text[*i+1]==character){
+    //     printf("%c%c\n", character, character);
+    //     *i += 2;
+    //     return;
+    //   }
+    //   else{
+    //     printf("%c\n", character);
+    //     ++*i;
+    //     return;
+    //   }
+    // }
 
     case '"': {
       printf("string ");
@@ -180,6 +178,36 @@ void iterate(int *i, char curr, char *text){
         }
       }
 
+      // printf("Checking double char...\n");
+      // printf("%c ", curr);
+
+      char *doubleCharOperators[] = {"==x", "++=x", "--=x", "<=x", ">=x"};
+      for(int j=0; j<sizeof(doubleCharOperators)/sizeof(char*); ++j){
+        if(curr != doubleCharOperators[j][0]){
+          // printf("%c", doubleCharOperators[j][0]);
+          continue;
+        }
+        ++*i;
+        char next = text[*i];
+        char *iterator = doubleCharOperators[j];
+        while(*iterator != 'x' && *iterator != '\0'){
+          if(*iterator == next){
+            printf("%c%c\n", curr, next);
+            ++*i;
+            return;
+          }
+          ++iterator;
+        }
+        printf("%c\n", *iterator);
+        if(*iterator=='x'){
+          printf("%c\n", curr);
+          return;
+        }
+        error(*i);
+      } 
+
+      // printf("\n... Checked double char\n");
+
       char *keywords[] = {"char", "int", "float", "for", "while", "void", "return", "sizeof"};
       for(int j=0; j<sizeof(keywords)/sizeof(keywords[0]); ++j){
         if(streaming_strcmp(text+*i, keywords[j], strlen(keywords[j]))==0){
@@ -207,7 +235,7 @@ void iterate(int *i, char curr, char *text){
       if(isIndentifierChar(curr)){
         printf("identifier ");
         while(isIndentifierChar(text[*i])){
-          printf("%c", text[*i]);
+          printf("%c", curr);
           ++*i;
         }
         printf("\n");
