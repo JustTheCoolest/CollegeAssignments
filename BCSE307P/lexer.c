@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 
+// Flag: Input has to be given/processed as raw string, to be faithful 
+
 /*
 Not Implemented:
 - Multiline comments
 - Preprocessor directives other than #include (#define, etc.)
 - Keyword list is probably incomplete
+- Differentiating between < and <= and so on
+- Validation of identifier and value for #define, and validation of module name for #include
+- Validation of end of line for preprocessor directives
 */
 
 /*
@@ -55,6 +60,45 @@ void iterate(int *i, char curr, char *text){
       return;
     }
 
+    case '+':
+    case '-':
+    case '=':
+    char character = curr;
+    if(text[*i+1]==character){
+      printf("%c%c\n", character, character);
+      *i += 2;
+      return;
+    }
+    else{
+      printf("%c\n", character);
+      ++*i;
+      return;
+    }
+
+    case '"':
+    printf("string ");
+    char end = curr;
+    ++*i;
+    while(text[*i] != end){
+      if(text[*i] == '\\'){
+        error(*i);
+      }
+      printf("%c", text[*i]);
+      ++*i;
+    }
+    printf("\n");
+    return;
+
+    case '\'':
+    printf("character ");
+    printf("%c", text[*i+1]);
+    printf("\n");
+    if(text[*i+2] != '\''){
+      error(*i);
+    }
+    *i += 3;
+    return;
+
     case '#':
     if(streaming_strcmp(text+*i, "#include", 8)==0){
       *i += 8;
@@ -77,6 +121,26 @@ void iterate(int *i, char curr, char *text){
       }
       printf("\n");
     }
+    
+    else if(streaming_strcmp(text+*i, "#define", 7)==0){
+      *i += 7;
+      printf("preprocessor_directive #define\n");
+      while(text[*i]==' ') ++*i;
+      printf("#define_identifier ");
+      while(text[*i] != ' '){
+        printf("%c", text[*i]);
+        ++*i;
+      }
+      printf("\n");
+      while(text[*i]==' ') ++*i;
+      printf("#define_value ");
+      while(text[*i] != '\n'){
+        printf("%c", text[*i]);
+        ++*i;
+      }
+      printf("\n");
+    }
+
     else{
       error(*i);
     }
@@ -88,8 +152,28 @@ void iterate(int *i, char curr, char *text){
     return;
 
     default:
-    char *keywords[] = {"char", "int", "float", "for", "while", "void", "return"};
 
+    // Flag: Implement as char array instead of string array
+    char *punctuations[] = {"{", "}", "(", ")", "[", "]", ";", ",", "."};
+    for(int j=0; j<sizeof(punctuations)/sizeof(punctuations[0]); ++j){
+      if(curr == punctuations[j][0]){
+        printf("%s\n", punctuations[j]);
+        ++*i;
+        return;
+      }
+    }
+
+    char *keywords[] = {"char", "int", "float", "for", "while", "void", "return", "sizeof"};
+    for(int j=0; j<sizeof(keywords)/sizeof(keywords[0]); ++j){
+      if(streaming_strcmp(text+*i, keywords[j], strlen(keywords[j]))==0){
+        printf("keyword ");
+        *i += strlen(keywords[j]);
+        printf("%s\n", keywords[j]);
+        return;
+      }
+    }
+
+    error(*i);
   }
 }
 
@@ -107,114 +191,196 @@ int main(){
     // char text[] = getText(name); 
     // Flag: Implement File Handling
     // Flag: Optimality would be to traverse this char by char without loading fully
-    char text1[] = ""; /*
-    // Program to check for a palindrome string by reversing
-// the string
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
-char *strrev(char *str) {
-    int len = strlen(str);
-  
-      // Temporary char array to store the
-    // reversed string
-    char *rev = (char *)malloc
-      (sizeof(char) * (len + 1));
-  
-    // Reversing the string
-    for (int i = 0; i < len; i++) {
-        rev[i] = str[len - i - 1];
-    }
-    rev[len] = '\0';
-    return rev;
-}
-
-void isPalindrome(char *str) {
-
-    // Reversing the string
-    char *rev = strrev(str);
-
-    // Check if the original and reversed
-      // strings are equal
-    if (strcmp(str, rev) == 0)
-        printf("\"%s\" is palindrome.\n",
-               str);
-    else
-        printf("\"%s\" is not palindrome.\n",
-               str);
-}
-
-int main() {
-    
-      // Cheking for palindrome strings
-    isPalindrome("madam");
-      isPalindrome("hello");
-
-    return 0;
-}
-    */
+    char text1[] = "\
+    // Program to check for a palindrome string by reversing\n\
+    // the string\n\
+    #include <stdio.h>\n\
+    #include <string.h>\n\
+    #include <stdbool.h>\n\
+    #include <stdlib.h>\n\
+    \n\
+    char *strrev(char *str) {\n\
+        int len = strlen(str);\n\
+    \n\
+        // Temporary char array to store the\n\
+        // reversed string\n\
+        char *rev = (char *)malloc(sizeof(char) * (len + 1));\n\
+    \n\
+        // Reversing the string\n\
+        for (int i = 0; i < len; i++) {\n\
+            rev[i] = str[len - i - 1];\n\
+        }\n\
+        rev[len] = '\\0';\n\
+        return rev;\n\
+    }\n\
+    \n\
+    void isPalindrome(char *str) {\n\
+        // Reversing the string\n\
+        char *rev = strrev(str);\n\
+    \n\
+        // Check if the original and reversed strings are equal\n\
+        if (strcmp(str, rev) == 0)\n\
+            printf(\"\\\"%s\\\" is palindrome.\\n\", str);\n\
+        else\n\
+            printf(\"\\\"%s\\\" is not palindrome.\\n\", str);\n\
+    }\n\
+    \n\
+    int main() {\n\
+        // Checking for palindrome strings\n\
+        isPalindrome(\"madam\");\n\
+        isPalindrome(\"hello\");\n\
+    \n\
+        return 0;\n\
+    }\n\
+    ";
     lex(text1);
-    char text2[] = ""; /*
-    // C program to multiply two matrices
-#include <stdio.h>
-#include <stdlib.h>
-
-// matrix dimensions so that we dont have to pass them as
-// parametersmat1[R1][C1] and mat2[R2][C2]
-#define R1 2 // number of rows in Matrix-1
-#define C1 2 // number of columns in Matrix-1
-#define R2 2 // number of rows in Matrix-2
-#define C2 3 // number of columns in Matrix-2
-
-void multiplyMatrix(int m1[][C1], int m2[][C2])
-{
-	int result[R1][C2];
-
-	printf("Resultant Matrix is:\n");
-
-	for (int i = 0; i < R1; i++) {
-		for (int j = 0; j < C2; j++) {
-			result[i][j] = 0;
-
-			for (int k = 0; k < R2; k++) {
-				result[i][j] += m1[i][k] * m2[k][j];
-			}
-
-			printf("%d\t", result[i][j]);
-		}
-
-		printf("\n");
-	}
-}
-
-// Driver code
-int main()
-{
-	// R1 = 4, C1 = 4 and R2 = 4, C2 = 4 (Update these
-	// values in MACROs)
-	int m1[R1][C1] = { { 1, 1 }, { 2, 2 } };
-
-	int m2[R2][C2] = { { 1, 1, 1 }, { 2, 2, 2 } };
-
-	// if coloumn of m1 not equal to rows of m2
-	if (C1 != R2) {
-		printf("The number of columns in Matrix-1 must be "
-			"equal to the number of rows in "
-			"Matrix-2\n");
-		printf("Please update MACROs value according to "
-			"your array dimension in "
-			"#define section\n");
-
-		exit(EXIT_FAILURE);
-	}
-
-	// Function call
-	multiplyMatrix(m1, m2);
-
-	return 0;
-}
-    */
+    
+    char text2[] = "\
+    // C program to multiply two matrices\n\
+    #include <stdio.h>\n\
+    #include <stdlib.h>\n\
+    \n\
+    // matrix dimensions so that we dont have to pass them as\n\
+    // parametersmat1[R1][C1] and mat2[R2][C2]\n\
+    #define R1 2 // number of rows in Matrix-1\n\
+    #define C1 2 // number of columns in Matrix-1\n\
+    #define R2 2 // number of rows in Matrix-2\n\
+    #define C2 3 // number of columns in Matrix-2\n\
+    \n\
+    void multiplyMatrix(int m1[][C1], int m2[][C2]) {\n\
+        int result[R1][C2];\n\
+    \n\
+        printf(\"Resultant Matrix is:\\n\");\n\
+    \n\
+        for (int i = 0; i < R1; i++) {\n\
+            for (int j = 0; j < C2; j++) {\n\
+                result[i][j] = 0;\n\
+    \n\
+                for (int k = 0; k < R2; k++) {\n\
+                    result[i][j] += m1[i][k] * m2[k][j];\n\
+                }\n\
+    \n\
+                printf(\"%d\\t\", result[i][j]);\n\
+            }\n\
+    \n\
+            printf(\"\\n\");\n\
+        }\n\
+    }\n\
+    \n\
+    int main() {\n\
+        int m1[R1][C1] = { { 1, 1 }, { 2, 2 } };\n\
+        int m2[R2][C2] = { { 1, 1, 1 }, { 2, 2, 2 } };\n\
+    \n\
+        if (C1 != R2) {\n\
+            printf(\"The number of columns in Matrix-1 must be \"\n\
+                \"equal to the number of rows in \"\n\
+                \"Matrix-2\\n\");\n\
+            printf(\"Please update MACROs value according to \"\n\
+                \"your array dimension in \"\n\
+                \"#define section\\n\");\n\
+    \n\
+            exit(EXIT_FAILURE);\n\
+        }\n\
+    \n\
+        multiplyMatrix(m1, m2);\n\
+        return 0;\n\
+    }\n\
+    ";
+    lex(text2);char text1[] = "\
+    // Program to check for a palindrome string by reversing\n\
+    // the string\n\
+    #include <stdio.h>\n\
+    #include <string.h>\n\
+    #include <stdbool.h>\n\
+    #include <stdlib.h>\n\
+    \n\
+    char *strrev(char *str) {\n\
+        int len = strlen(str);\n\
+    \n\
+        // Temporary char array to store the\n\
+        // reversed string\n\
+        char *rev = (char *)malloc(sizeof(char) * (len + 1));\n\
+    \n\
+        // Reversing the string\n\
+        for (int i = 0; i < len; i++) {\n\
+            rev[i] = str[len - i - 1];\n\
+        }\n\
+        rev[len] = '\\0';\n\
+        return rev;\n\
+    }\n\
+    \n\
+    void isPalindrome(char *str) {\n\
+        // Reversing the string\n\
+        char *rev = strrev(str);\n\
+    \n\
+        // Check if the original and reversed strings are equal\n\
+        if (strcmp(str, rev) == 0)\n\
+            printf(\"\\\"%s\\\" is palindrome.\\n\", str);\n\
+        else\n\
+            printf(\"\\\"%s\\\" is not palindrome.\\n\", str);\n\
+    }\n\
+    \n\
+    int main() {\n\
+        // Checking for palindrome strings\n\
+        isPalindrome(\"madam\");\n\
+        isPalindrome(\"hello\");\n\
+    \n\
+        return 0;\n\
+    }\n\
+    ";
+    lex(text1);
+    
+    char text2[] = "\
+    // C program to multiply two matrices\n\
+    #include <stdio.h>\n\
+    #include <stdlib.h>\n\
+    \n\
+    // matrix dimensions so that we dont have to pass them as\n\
+    // parametersmat1[R1][C1] and mat2[R2][C2]\n\
+    #define R1 2 // number of rows in Matrix-1\n\
+    #define C1 2 // number of columns in Matrix-1\n\
+    #define R2 2 // number of rows in Matrix-2\n\
+    #define C2 3 // number of columns in Matrix-2\n\
+    \n\
+    void multiplyMatrix(int m1[][C1], int m2[][C2]) {\n\
+        int result[R1][C2];\n\
+    \n\
+        printf(\"Resultant Matrix is:\\n\");\n\
+    \n\
+        for (int i = 0; i < R1; i++) {\n\
+            for (int j = 0; j < C2; j++) {\n\
+                result[i][j] = 0;\n\
+    \n\
+                for (int k = 0; k < R2; k++) {\n\
+                    result[i][j] += m1[i][k] * m2[k][j];\n\
+                }\n\
+    \n\
+                printf(\"%d\\t\", result[i][j]);\n\
+            }\n\
+    \n\
+            printf(\"\\n\");\n\
+        }\n\
+    }\n\
+    \n\
+    int main() {\n\
+        int m1[R1][C1] = { { 1, 1 }, { 2, 2 } };\n\
+        int m2[R2][C2] = { { 1, 1, 1 }, { 2, 2, 2 } };\n\
+    \n\
+        if (C1 != R2) {\n\
+            printf(\"The number of columns in Matrix-1 must be \"\n\
+                \"equal to the number of rows in \"\n\
+                \"Matrix-2\\n\");\n\
+            printf(\"Please update MACROs value according to \"\n\
+                \"your array dimension in \"\n\
+                \"#define section\\n\");\n\
+    \n\
+            exit(EXIT_FAILURE);\n\
+        }\n\
+    \n\
+        multiplyMatrix(m1, m2);\n\
+        return 0;\n\
+    }\n\
+    ";
     lex(text2);
+    return 0;
 }
