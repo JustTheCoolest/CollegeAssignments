@@ -35,12 +35,29 @@ public:
     }
 };
 
-void solve(string s){
+void solve(string s, string p){
     Solution sol;
-    cout << s << " " << (sol.isMatch(s, "a.*bb") ? "true" : "false") << endl;
+    cout << s << " " << (sol.isMatch(s, p) ? "true" : "false") << endl;
+}
+
+void solveNeither(string s, string p1, string p2){
+    Solution sol;
+    cout << s << " " << (sol.isMatch(s, p1) || sol.isMatch(s, p2) ? "false" : "true") << endl;
 }
 
 int main(){
-    solve("abababbababb");
-    solve("ababbababbabba");
+    cout << "Q1:" << endl;
+    solve("xyxx", "x.*yy");
+    solve("xyxyyy", "x.*yy");
+
+    cout << endl;
+
+    cout << "Q2:" << endl;
+    // Flag: "y?(xy)*x?", but groups are not implemented in my code
+    string p1 = ".*xx.*";
+    string p2 = ".*yy.*";
+    solveNeither("xyxx", p1, p2);
+    solveNeither("xyxyyy", p1, p2);
+    solveNeither("xyxyx", p1, p2);
+    solveNeither("y", p1, p2);
 }

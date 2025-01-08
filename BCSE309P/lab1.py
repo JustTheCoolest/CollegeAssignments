@@ -47,6 +47,22 @@ def playfair_encrypt(plain_text, key):
     grid = package(key)
     remaining = ordered_set(alphabet) - key
     grid = package(remaining, key=grid)
+
+    pairs = get_pairs(plain_text)
+    for pair in pairs:
+        p1 = getPosition(pair[0], grid)
+        p2 = getPosition(pair[1], grid)
+        if p1[0] == p2[0]:
+            pair[0] = grid[p1[0]][(p1[1]+1)%5]
+            pair[1] = grid[p2[0]][(p2[1]+1)%5]
+        elif p1[1] == p2[1]:
+            pair[0] = grid[(p1[0]+1)%5][p1[1]]
+            pair[1] = grid[(p2[0]+1)%5][p2[1]]
+        else:
+            pair[0] = grid[p1[0]][p2[1]]
+            pair[1] = grid[p2[0]][p1[1]]
+
+    return join_pairs(pairs)
     
 
 ciphers = {

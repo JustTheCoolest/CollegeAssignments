@@ -7,7 +7,7 @@ void solve(string s){
     int state = 0;
     for(char c: s){
         if(state == 0){
-            if(c=='b'){
+            if(c=='y'){
                 state = 1;
             }
             else{
@@ -15,7 +15,7 @@ void solve(string s){
             }
         }
         else if(state == 1 || state == 2){
-            if(c=='b'){
+            if(c=='y'){
                 state = 2;
             }
             else{
@@ -28,7 +28,10 @@ void solve(string s){
 }
 
 int main(){
-    solve("abbbb");
-    solve("aabb");
-    solve("aabbab");
+    solve("yyyy");
+    solve("xxyy");
+    solve("xxyyxy");
+    solve("xyyy");
+    solve("yyxx");
+    solve("xyxyyy");
 }

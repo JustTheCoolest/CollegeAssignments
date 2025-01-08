@@ -2,7 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Critical: Bug in differentiating between the dereference operator and the multiplication operator
+// Critical: Bug in differentiating between the dereference operator and the multiplication operator.
+// Can be implemented by having a state variable for the states: Start of Expression, Mid Expression, Not An Expression
 
 /*
 Not Implemented:
