@@ -2,6 +2,7 @@ import socket
 import lab1 as lab
 
 PLAIN_TEXT = "This is the client text"
+PLAIN_TEXT = PLAIN_TEXT.lower().strip()
 
 s = socket.socket()
 

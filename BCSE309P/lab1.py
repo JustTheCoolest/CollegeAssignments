@@ -6,6 +6,8 @@ PLAIN_TEXT = "Hello World"
 # (Simplifications are made throughout the assignment)
 PLAIN_TEXT = PLAIN_TEXT.lower().strip()
 
+ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+
 def caesar_encrypt(plain_text, key):
     encrypted = ""
     for character in plain_text:
@@ -20,12 +22,14 @@ def caesar_decrypt(encrypted, key):
     return caesar_encrypt(encrypted, -key)
 
 def monoalphabetic_encrypt(plain_text, key):
+    key = dict(zip(ALPHABET, key))
     key[" "] = " "
     return "".join((key[char] for char in plain_text))
 
 def monoalphabetic_decrypt(encrypted, key):
-    key = dict(zip(key.keys(), key.values()))
-    return monoalphabetic_encrypt(encrypted, key)
+    key = dict(zip(key, ALPHABET))
+    key[" "] = " "
+    return "".join((key[char] for char in encrypted)) # Flag: Redundant Code
 
 # Monoalphabetic Cipher key generation:
 
@@ -70,14 +74,16 @@ def get_pairs(plain_text, filler="x"):
     pairs = []
     flag = False
     for char in plain_text:
-        assert len(pairs[-1]) <= 2
-        assert (len(pairs[-1]) == 1) == flag
+        # print(pairs, char, flag)
+        assert len(pairs)==0 or len(pairs[-1]) <= 2
+        assert len(pairs)==0 or (len(pairs[-1]) == 1) == flag
         if char == " ":
             continue
-        if flag and char == plain_text[-1][-1]:
+        if flag and (char == pairs[-1][-1]):
             pairs[-1].append("x")
             pairs.append([])
             pairs[-1].append(char)
+            continue
         if flag:
             pairs[-1].append(char)
             flag = False
@@ -101,13 +107,16 @@ def join_pairs(pairs):
     return "".join((pair[0]+pair[1] for pair in pairs))
 
 def playfair(plain_text, key, dir):
+    plain_text = plain_text.replace("j", "i")
     key = ordered_set(key)
     grid = package(key)
     alphabet = "abcdefghiklmnopqrstuvwxyz"
     remaining = diff_set(alphabet, key)
     grid = package(remaining, key=grid)
+    # print(grid)
 
     pairs = get_pairs(plain_text)
+    # print(pairs)
     for pair in pairs:
         p1 = get_position(pair[0], grid)
         p2 = get_position(pair[1], grid)
@@ -130,20 +139,20 @@ def playfair_decrypt(encrypted, key):
     return playfair(encrypted, key, -1)
 
 def hill_encrypt(plain_text, key, filler=25):
-    assert np.determinant(key) != 0
+    # assert np.determinant(key) != 0
     # assert np.determinant has a reciprocal in mod 26
     plain_text = plain_text.lower()
     plain_text = np.array([ord(char)-ord('a') for char in plain_text])
     m, n = key.shape
     plain_text.extend([25] * len(-plain_text%m))
     plain_text = np.reshape(plain_text, (-1, m))
-    encrypted = np.multiply(plain_text, key)
+    encrypted = plain_text @ key
     encrypted = encrypted.flatten()
     encrypted = "".join(encrypted.apply(lambda x: chr(ord('a')+x)))
     return encrypted
 
 def hill_decrypt(encrypted_text, key):
-    decrypt_key = np.matrix_inverse(key)
+    decrypt_key = np.linalg.inv(key) # Note: This is a preprocessing step. They decryption key is stored this way directly
     return hill_encrypt(encrypted_text, decrypt_key)
 
 def vigenere(plain_text, key, dir=1):
@@ -215,16 +224,16 @@ def rail_fence_decrypt(encrypted_text, depth=2):
         decrypted += encrypted_text[starts[i]+n]
     return decrypted
 
-ciphers = {
+ciphers = [
     ("caesar", caesar_encrypt, caesar_decrypt, 9),
     ("monoalphabetic", monoalphabetic_encrypt, monoalphabetic_decrypt, "mlkcfyjgxvqtzehuoprbadwnis"),
     ("playfair", playfair_encrypt, playfair_decrypt, "monarchy"),
-    ("hill", hill_encrypt, hill_decrypt, [[6, 24, 1], [13, 16, 10], [20, 17, 15]]),
+    ("hill", hill_encrypt, hill_decrypt, ((6, 24, 1), (13, 16, 10), (20, 17, 15))),
     ("vignere", vigenere_encrypt, vigenere_decrypt, "deceptive"),
     # Flag: True one time pads do not reuse keys.
     ("one-time-pad", one_time_pad_encrypt, one_time_pad_decrypt, "mlkcfyjgxv qtzehuoprbadw nis"),
     ("rail-fence", rail_fence_encrypt, rail_fence_decrypt, 2),
-}
+]
 
 def main():
     print("Plain Text: ", PLAIN_TEXT)

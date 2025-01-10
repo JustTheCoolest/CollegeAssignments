@@ -2,10 +2,11 @@ import socket
 import lab1 as lab
 
 PLAIN_TEXT = "This is the server text"
+PLAIN_TEXT = PLAIN_TEXT.lower().strip()
 
 s = socket.socket()
 s.bind(('', 12345))
-s.listen(1)
+s.listen(5)
 
 c, addr = s.accept()
 print("Connection from: ", addr)
@@ -15,6 +16,8 @@ msg = c.recv(1024)
 print("Message: ", msg.decode())
 
 c.send("Hello from server".encode())
+
+print()
 
 for cipher in lab.ciphers:
     key = cipher[3]
