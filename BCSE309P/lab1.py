@@ -253,12 +253,16 @@ def one_time_pad_encrypt(plain_text, key):
     return "".join((num_to_bin_str(element) for element in encrypted))
 
 def one_time_pad_decrypt(encrypted_text, key):
+    encrypted_text = [encrypted_text[i:i+8] for i in range(0, len(encrypted_text), 8)]
+    encrypted_text = [bin_str_to_num(element) for element in encrypted_text]
     if len(encrypted_text) > len(key):
         raise Exception("One Time Pad cipher: Key is too short")
-    encrypted_text = [bin_str_to_num(element) for element in encrypted_text]
-    key = [ord(char) - ord('a') if char!=' ' else 26 for char in key[:(len(encrypted_text)//8)]] # Flag: Redundant Code
-    decrypted = [x ^ y for x, y in zip(key, encrypted_text)]
-    return "".join((chr(ord('a')+element) for element in decrypted))
+    key = [ord(char) - ord('a') if char!=' ' else 26 for char in key[:len(encrypted_text)]] # Flag: Redundant Code
+    print(key)
+    print(encrypted_text)
+    decrypted = [x^y for x, y in zip(key, encrypted_text)]
+    print(decrypted)
+    return "".join((chr(ord('a')+element) if element != 26 else ' ' for element in decrypted))
 
 def rail_fence_encrypt(plain_text, depth=2):
     encrypted = ""
@@ -300,5 +304,5 @@ def main():
         print(f"{cipher[0]} Ciher encrypted text: ", encrypted)
         print(f"{cipher[0]} Ciher decrypted text: ", cipher[2](encrypted, key))
 
-
-# main()
+if __name__ == "__main__":
+    main()
