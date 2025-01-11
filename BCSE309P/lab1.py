@@ -2,6 +2,12 @@ import numpy as np
 
 PLAIN_TEXT = "Hello World"
 
+"""
+Architecture suggestions:
+Instead of storing keys as direct objects, store them as functions that have to be called. 
+This way any key generation process (including having to send the key to the other party) can be done in the key generation function.
+"""
+
 # For simplicity for studying
 # (Simplifications are made throughout the assignment)
 PLAIN_TEXT = PLAIN_TEXT.lower().strip()
@@ -141,19 +147,68 @@ def playfair_decrypt(encrypted, key):
 def hill_encrypt(plain_text, key, filler=25):
     # assert np.determinant(key) != 0
     # assert np.determinant has a reciprocal in mod 26
-    plain_text = plain_text.lower()
-    plain_text = np.array([ord(char)-ord('a') for char in plain_text])
+    plain_text = plain_text.lower().replace(" ", "")
+    plain_text = np.array([ord(char)-ord('a') for char in plain_text], dtype=int)
+    key = np.array(key, dtype=int)
     m, n = key.shape
-    plain_text.extend([25] * len(-plain_text%m))
+    plain_text = np.append(plain_text, [25] * ((-len(plain_text)) % m))
     plain_text = np.reshape(plain_text, (-1, m))
+    plain_text = np.array(plain_text, dtype=int)
     encrypted = plain_text @ key
+    # print(plain_text.dtype, key.dtype, encrypted.dtype)
+    encrypted = encrypted % 26
     encrypted = encrypted.flatten()
-    encrypted = "".join(encrypted.apply(lambda x: chr(ord('a')+x)))
+    # Flag: Vectorize
+    encrypted = "".join([chr(ord('a') + x) for x in encrypted])
     return encrypted
 
+def adj_transp(key):
+    # Flag: Implementing only for 2x2 matrices
+    a, b, c, d = key[0][0], key[0][1], key[1][0], key[1][1]
+    return [[d, -b], [-c, a]]
+
+def modular_inverse_element(det, mod=26):
+    if mod != 26:
+        raise Exception("Only mod 26 is supported")
+    mapping = {
+        1: 1,
+        3: 9,
+        5: 21,
+        7: 15,
+        9: 3,
+        11: 19,
+        15: 7,
+        17: 23,
+        19: 11,
+        21: 5,
+        23: 17,
+        25: 25
+    }
+    # print(det)
+    det %= mod
+    # print(det)
+    if det not in mapping:
+        raise Exception("The determinant of this matrix does not have an inverse under mod 26")
+    return mapping[det]
+
+def modular_inverse(key, det, mod=26):
+    key = np.array(key, dtype=int)
+    multiplier = modular_inverse_element(det, mod)
+    key = key * multiplier
+    return key
+
+def determinant(key):
+    # Flag: Implementing only for 2x2 matrices
+    a, b, c, d = key[0][0], key[0][1], key[1][0], key[1][1]
+    return a*d - b*c
+
 def hill_decrypt(encrypted_text, key):
-    decrypt_key = np.linalg.inv(key) # Note: This is a preprocessing step. They decryption key is stored this way directly
-    return hill_encrypt(encrypted_text, decrypt_key)
+    # Flag: Implementing only for 2x2 matrices
+    key = np.array(key, dtype=int)
+    det = determinant(key)
+    key = adj_transp(key)
+    key = modular_inverse(key, det)
+    return hill_encrypt(encrypted_text, key)
 
 def vigenere(plain_text, key, dir=1):
     encrypted = ""
@@ -228,7 +283,8 @@ ciphers = [
     ("caesar", caesar_encrypt, caesar_decrypt, 9),
     ("monoalphabetic", monoalphabetic_encrypt, monoalphabetic_decrypt, "mlkcfyjgxvqtzehuoprbadwnis"),
     ("playfair", playfair_encrypt, playfair_decrypt, "monarchy"),
-    ("hill", hill_encrypt, hill_decrypt, ((6, 24, 1), (13, 16, 10), (20, 17, 15))),
+    # ("hill", hill_encrypt, hill_decrypt, ((6, 24, 1), (13, 16, 10), (20, 17, 15))),
+    ("hill", hill_encrypt, hill_decrypt, ((5, 8), (17, 3))),
     ("vignere", vigenere_encrypt, vigenere_decrypt, "deceptive"),
     # Flag: True one time pads do not reuse keys.
     ("one-time-pad", one_time_pad_encrypt, one_time_pad_decrypt, "mlkcfyjgxv qtzehuoprbadw nis"),

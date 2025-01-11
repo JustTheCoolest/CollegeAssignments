@@ -1,6 +1,7 @@
 import socket
 import lab1 as lab
 
+# Flag: Lowering and stripping should be implementing in each of the cipher functions instead (we can use a helper function)
 PLAIN_TEXT = "This is the server text"
 PLAIN_TEXT = PLAIN_TEXT.lower().strip()
 
