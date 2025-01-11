@@ -211,12 +211,13 @@ def hill_decrypt(encrypted_text, key):
     return hill_encrypt(encrypted_text, key)
 
 def vigenere(plain_text, key, dir=1):
+    n = len(key)
     encrypted = ""
-    for char in plain_text:
+    for i, char in enumerate(plain_text):
         if char == " ":
             encrypted_char = " "
         else:
-            encrypted_char = chr(ord('a') + (ord(char)-ord('a')+dir*(ord(key)-ord('a')))%26)
+            encrypted_char = chr(ord('a') + (ord(char)-ord('a')+dir*(ord(key[i%n])-ord('a')))%26)
         encrypted += encrypted_char
     return encrypted
 
