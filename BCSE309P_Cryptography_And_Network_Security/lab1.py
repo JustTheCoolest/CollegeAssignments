@@ -244,11 +244,15 @@ def bin_str_to_num(bin_str):
         # Flag: Not parallelizable
     return result
 
+def spaceful_encode(plain_text):
+    # Flag: Redundant Code in other places
+    return [ord(char) - ord('a') if char!=' ' else 26 for char in plain_text]
+
 def one_time_pad_encrypt(plain_text, key):
     if len(plain_text) > len(key):
         raise Exception("One Time Pad cipher: Key is too short")
     key = [ord(char) - ord('a') if char!=' ' else 26 for char in key[:len(plain_text)]]
-    plain_text = [ord(char) - ord('a') for char in plain_text]
+    plain_text = spaceful_encode(plain_text)
     encrypted = [x ^ y for x, y in zip(key, plain_text)]
     return "".join((num_to_bin_str(element) for element in encrypted))
 
@@ -258,10 +262,10 @@ def one_time_pad_decrypt(encrypted_text, key):
     if len(encrypted_text) > len(key):
         raise Exception("One Time Pad cipher: Key is too short")
     key = [ord(char) - ord('a') if char!=' ' else 26 for char in key[:len(encrypted_text)]] # Flag: Redundant Code
-    print(key)
-    print(encrypted_text)
+    # print(key)
+    # print(encrypted_text)
     decrypted = [x^y for x, y in zip(key, encrypted_text)]
-    print(decrypted)
+    # print(decrypted)
     return "".join((chr(ord('a')+element) if element != 26 else ' ' for element in decrypted))
 
 def rail_fence_encrypt(plain_text, depth=2):
