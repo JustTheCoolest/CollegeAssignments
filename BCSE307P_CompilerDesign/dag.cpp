@@ -25,26 +25,7 @@ namespace std{
 class PostOrderIterator {
     std::stack<std::reference_wrapper<Node*>> stack;
 
-public:
-    explicit PostOrderIterator(Node* root) {
-        if (root) {
-            stack.push(std::ref(root));
-        }
-    }
-
-    bool is_not_end() const {
-        return !stack.empty();
-    }
-
-    Node* operator*() const {
-        return stack.top().get();
-    }
-    
-    PostOrderIterator& operator++() {
-        stack.pop();
-        if(stack.empty()){
-            return *this;
-        }
+    void expand(){
         while (stack.top().get()->left || stack.top().get()->right) {
             if (stack.top().get()->right) {
                 stack.push(std::ref(stack.top().get()->right));
@@ -53,6 +34,31 @@ public:
                 stack.push(std::ref(stack.top().get()->left));
             }
         }
+    }
+
+public:
+    explicit PostOrderIterator(Node* &root) {
+        if (root) {
+            stack.push(std::ref(root));
+            expand();
+        }
+    }
+
+    bool is_not_end() const {
+        return !stack.empty();
+    }
+
+    Node* operator*() const {
+        auto gotten_node = stack.top().get();
+        return gotten_node;
+    }
+    
+    PostOrderIterator& operator++() {
+        stack.pop();
+        if(stack.empty()){
+            return *this;
+        }
+        expand();
         return *this;
     }
 
@@ -61,10 +67,22 @@ public:
     }
 };
 
+struct HashWrapper {
+    size_t operator()(const Node* n) const {
+        return hash<Node>{}(*n);
+    }
+};
+
+struct EqualityWrapper {
+    bool operator()(const Node* n1, const Node* n2) const {
+        return *n1 == *n2;
+    }
+};
+
 // Function to convert a tree to a DAG
 Node* convert_to_dag(Node* root) {
     PostOrderIterator it(root);
-    std::unordered_set<Node*> nodes;
+    std::unordered_set<Node*, HashWrapper, EqualityWrapper> nodes;
 
     while (it.is_not_end()) {
         auto match = nodes.find(*it);
@@ -152,7 +170,19 @@ int main(){
     Node* n12 = new Node('a');
     Node* n13 = new Node('=', n12, n11);
 
-    n13 = convert_to_dag(n13);
-    display(n13);
+    cout << (hash<Node>{}(*n1) == hash<Node>{}(*n5)) << endl;
+    cout << (hash<Node>{}(*n1) == hash<Node>{}(*n10)) << endl;
+    cout << (*n1 == *n5) << endl;
+    cout << (*n1 == *n10) << endl;
+
+    auto it = PostOrderIterator(n13);
+    while(it.is_not_end()){
+        cout << (*it)->val << " ";
+        ++it;
+    }
+    cout << endl;
+
+    // n13 = convert_to_dag(n13);
+    // display(n13);
     
 }
