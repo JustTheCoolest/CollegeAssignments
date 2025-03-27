@@ -23,15 +23,21 @@ namespace std{
 };
 
 class PostOrderIterator {
-    std::stack<std::reference_wrapper<Node*>> stack;
+    std::stack<std::pair<std::reference_wrapper<Node*>, bool>> stack;
 
-    void expand(){
-        while (stack.top().get()->left || stack.top().get()->right) {
-            if (stack.top().get()->right) {
-                stack.push(std::ref(stack.top().get()->right));
+    void expand() {
+        while (!stack.top().second) {
+            auto [node_ref, visited] = stack.top();
+            stack.pop();
+            stack.push({node_ref, true}); // Mark the current node as visited
+
+            Node* node = node_ref.get();
+            // Push right and left children onto the stack (if they exist)
+            if (node->right) {
+                stack.push({std::ref(node->right), false});
             }
-            if (stack.top().get()->left) {
-                stack.push(std::ref(stack.top().get()->left));
+            if (node->left) {
+                stack.push({std::ref(node->left), false});
             }
         }
     }
@@ -39,7 +45,7 @@ class PostOrderIterator {
 public:
     explicit PostOrderIterator(Node* &root) {
         if (root) {
-            stack.push(std::ref(root));
+            stack.push({std::ref(root), false}); // Push the root node with visited = false
             expand();
         }
     }
@@ -49,10 +55,9 @@ public:
     }
 
     Node* operator*() const {
-        auto gotten_node = stack.top().get();
-        return gotten_node;
+        return stack.top().first.get(); // Return the current node
     }
-    
+
     PostOrderIterator& operator++() {
         stack.pop();
         if(stack.empty()){
@@ -63,7 +68,7 @@ public:
     }
 
     Node*& get_ref() {
-        return stack.top().get();
+        return stack.top().first.get(); // Return a reference to the current node
     }
 };
 
