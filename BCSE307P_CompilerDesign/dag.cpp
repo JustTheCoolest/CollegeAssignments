@@ -68,7 +68,7 @@ public:
     }
 
     Node*& get_ref() {
-        return stack.top().first.get(); // Return a reference to the current node
+        return stack.top().first; // Return a reference to the current node
     }
 };
 
@@ -96,9 +96,8 @@ Node* convert_to_dag(Node* root) {
             ++it;
             continue;
         }
-        Node* ref_node = it.get_ref();
         delete *it;
-        ref_node = *match;
+        it.get_ref() = *match;
         ++it;
     }
 
@@ -175,19 +174,19 @@ int main(){
     Node* n12 = new Node('a');
     Node* n13 = new Node('=', n12, n11);
 
-    cout << (hash<Node>{}(*n1) == hash<Node>{}(*n5)) << endl;
-    cout << (hash<Node>{}(*n1) == hash<Node>{}(*n10)) << endl;
-    cout << (*n1 == *n5) << endl;
-    cout << (*n1 == *n10) << endl;
+    // cout << (hash<Node>{}(*n1) == hash<Node>{}(*n5)) << endl;
+    // cout << (hash<Node>{}(*n1) == hash<Node>{}(*n10)) << endl;
+    // cout << (*n1 == *n5) << endl;
+    // cout << (*n1 == *n10) << endl;
 
-    auto it = PostOrderIterator(n13);
-    while(it.is_not_end()){
-        cout << (*it)->val << " ";
-        ++it;
-    }
-    cout << endl;
+    // auto it = PostOrderIterator(n13);
+    // while(it.is_not_end()){
+    //     cout << (*it)->val << " ";
+    //     ++it;
+    // }
+    // cout << endl;
 
-    // n13 = convert_to_dag(n13);
-    // display(n13);
+    n13 = convert_to_dag(n13);
+    display(n13);
     
 }
