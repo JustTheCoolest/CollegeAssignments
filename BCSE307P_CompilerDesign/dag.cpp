@@ -40,39 +40,84 @@ struct Node{
     Node* right;
 };
 
-Node* convert_to_dag(Node* root){
-    iterator it = post_order_iterator(root);
-    auto nodes = unordered_set<Node*>();
-    while(it.is_not_end()){
+// Custom post-order iterator
+class PostOrderIterator {
+    std::stack<Node*&> stack;
+    Node* last_processed = nullptr;
+
+public:
+    explicit PostOrderIterator(Node* root) {
+        if (root) {
+            stack.push(root);
+        }
+    }
+
+    bool is_not_end() const {
+        return !stack.empty();
+    }
+
+    Node* operator*() const {
+        return stack.top();
+    }
+    
+    PostOrderIterator& operator++() {
+        stack.pop();
+        if(stack.empty()){
+            return *this;
+        }
+        while(stack.top()->left || stack.top()->right){
+            if(stack.top()->right){
+                stack.push(stack.top()->right);
+            }
+            if(stack.top()->left){
+                stack.push(stack.top()->left);
+            }
+        }
+        return *this;
+    }
+
+    Node*& get_ref() {
+        return stack.top();
+    }
+};
+
+// Function to convert a tree to a DAG
+Node* convert_to_dag(Node* root) {
+    PostOrderIterator it(root);
+    std::unordered_set<Node*> nodes;
+
+    while (it.is_not_end()) {
         auto match = nodes.find(*it);
-        if(match == nodes.end()){
+        if (match == nodes.end()) {
             nodes.insert(*it);
             ++it;
             continue;
         }
-        auto& ref_node = it.get_ref();
-        delete **it;
+        Node*& ref_node = it.get_ref();
+        delete *it;
         ref_node = *match;
     }
+
+    return root;
 }
 
 int main(){
     "a= (b+-c) * (b+-c) +d";
-    node* n1 = new node("b");
-    node* n2 = new node("c");
-    node* n3 = new node("-", n2);
-    node* n4 = new node("+", n1, n3);
-    node* n5 = new node("b");
-    node* n6 = new node("c");
-    node* n7 = new node("-", n6);
-    node* n8 = new node("+", n5, n7);
-    node* n9 = new node("*", n4, n8);
-    node* n10 = new node("d");
-    node* n11 = new node("+", n9, n10);
-    node* n12 = new node("a");
-    node* n13 = new node("=", n12, n11);
+    Node* n1 = new Node("b");
+    Node* n2 = new Node("c");
+    Node* n3 = new Node("-", n2);
+    Node* n4 = new Node("+", n1, n3);
+    Node* n5 = new Node("b");
+    Node* n6 = new Node("c");
+    Node* n7 = new Node("-", n6);
+    Node* n8 = new Node("+", n5, n7);
+    Node* n9 = new Node("*", n4, n8);
+    Node* n10 = new Node("d");
+    Node* n11 = new Node("+", n9, n10);
+    Node* n12 = new Node("a");
+    Node* n13 = new Node("=", n12, n11);
 
-    node* n13 = convert_to_dag(n13);
+    Node* n13 = convert_to_dag(n13);
     display(n13);
 
     
