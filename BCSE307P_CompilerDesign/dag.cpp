@@ -24,7 +24,6 @@ namespace std{
 
 class PostOrderIterator {
     std::stack<std::reference_wrapper<Node*>> stack;
-    Node* last_processed = nullptr;
 
 public:
     explicit PostOrderIterator(Node* root) {
@@ -109,16 +108,30 @@ public:
     }
 
     bool is_not_end(){
-        return q.empty();
+        return !q.empty();
     }
 };
 
 void display(Node* root){
     auto it = DAG_LevelOrderIterator(root);
     while(it.is_not_end()){
-        std::cout << (*it)->val << " " << *it << " -> " 
-            << (*it)->left << " " << &(*it)->left << " , " 
-            << (*it)->right << " " << &(*it)->right << "\n";
+        std::cout << (*it)->val << " " << *it << " -> ";
+        
+        if ((*it)->left) {
+            std::cout << (*it)->left->val << " " << (*it)->left;
+        } else {
+            std::cout << "null";
+        }
+        
+        std::cout << " , ";
+        
+        if ((*it)->right) {
+            std::cout << (*it)->right->val << " " << (*it)->right;
+        } else {
+            std::cout << "null";
+        }
+        
+        std::cout << "\n";
         ++it;
     }
 }
