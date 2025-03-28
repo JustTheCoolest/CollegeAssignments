@@ -1,5 +1,5 @@
 var [a-z]
-op [()+*/-]
+op [=()+*/-]
 
 %{
 float var_stack[100];
@@ -75,6 +75,9 @@ int precedence(int op_pos){
     else if(op=='-'){
         return -15;
     }
+    else if(op=='='){
+        return -100;
+    }
     else{
         fprintf(stderr, "operator not recognised: %c", op);
     }
@@ -107,7 +110,7 @@ int precedence_less_than(int op1_pos, int op2_pos){
     if(op2 == ')'){
         fprintf(stderr, "unevaluated inner brackets\n");
     }
-    return precedence(op1_pos) < precedence(op2_pos);
+    return precedence(op1_pos) <= precedence(op2_pos);
 }
 
 void eval(){
@@ -163,7 +166,8 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Total instructions: %d\n", inst_counter);
+    printf("\n");
+    printf("Quadruples\n");
     printf("res\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];

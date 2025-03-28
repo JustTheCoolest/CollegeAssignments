@@ -373,7 +373,7 @@ static const YY_CHAR yy_ec[256] =
         1,    3,    1,    1,    1,    1,    1,    1,    1,    4,
         4,    4,    4,    1,    4,    1,    4,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        4,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    5,    5,    5,    5,
@@ -439,14 +439,7 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "BCSE307P_CompilerDesign/tac_gen.l"
-#line 2 "BCSE307P_CompilerDesign/tac_gen.l"
-/*
-To impliment:
-- Unary minus
-- Brackets
-*/
-#line 449 "lex.yy.c"
-#line 13 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 5 "BCSE307P_CompilerDesign/tac_gen.l"
 float var_stack[100];
 char op_stack[100];
 unsigned int var_top = 0;
@@ -520,6 +513,9 @@ int precedence(int op_pos){
     else if(op=='-'){
         return -15;
     }
+    else if(op=='='){
+        return -100;
+    }
     else{
         fprintf(stderr, "operator not recognised: %c", op);
     }
@@ -552,7 +548,7 @@ int precedence_less_than(int op1_pos, int op2_pos){
     if(op2 == ')'){
         fprintf(stderr, "unevaluated inner brackets\n");
     }
-    return precedence(op1_pos) < precedence(op2_pos);
+    return precedence(op1_pos) <= precedence(op2_pos);
 }
 
 void eval(){
@@ -608,7 +604,8 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Total instructions: %d\n", inst_counter);
+    printf("\n");
+    printf("Quadruples\n");
     printf("res\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];
@@ -616,8 +613,8 @@ void print_tac(){
     }
 }
 
-#line 620 "lex.yy.c"
-#line 621 "lex.yy.c"
+#line 617 "lex.yy.c"
+#line 618 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -834,9 +831,9 @@ YY_DECL
 		}
 
 	{
-#line 184 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 180 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 840 "lex.yy.c"
+#line 837 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -895,31 +892,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 181 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 186 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 182 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 187 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 183 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 188 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 184 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 189 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 923 "lex.yy.c"
+#line 920 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1924,7 +1921,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 189 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){
