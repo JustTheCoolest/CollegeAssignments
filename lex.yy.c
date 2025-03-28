@@ -515,9 +515,10 @@ int precedence(int op_pos){
 void execute(){
     char op = op_stack[--op_top];
     char arg2 = var_stack[--var_top];
+    char res = start_char + inst_counter;
     if(op=='#'){
         struct tac_record trec = {
-            start_char + inst_counter,
+            res,
             '\0',
             '-',
             arg2
@@ -527,13 +528,14 @@ void execute(){
     else{
         char arg1 = var_stack[--var_top];
         struct tac_record trec = {
-            start_char + inst_counter,
+            res,
             arg1,
             op,
             arg2
         };
         tac[tac_top++] = trec;
     }
+    var_stack[var_top++] = res;
     ++inst_counter;
 }
 
@@ -564,8 +566,8 @@ void print_tac(){
     }
 }
 
-#line 568 "lex.yy.c"
-#line 569 "lex.yy.c"
+#line 570 "lex.yy.c"
+#line 571 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -782,9 +784,9 @@ YY_DECL
 		}
 
 	{
-#line 132 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 134 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 788 "lex.yy.c"
+#line 790 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -843,31 +845,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 133 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 135 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 134 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 136 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 135 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 136 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 138 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 139 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 871 "lex.yy.c"
+#line 873 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1872,7 +1874,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 139 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){
