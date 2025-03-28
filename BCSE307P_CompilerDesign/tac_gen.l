@@ -1,11 +1,3 @@
-%{
-/*
-To impliment:
-- Unary minus
-- Brackets
-*/
-%}
-
 var [a-z]
 op [()+*/-]
 
@@ -144,10 +136,11 @@ void op_push(char op){
         else if(op == '('){
             op_stack[op_top++] = '(';
         }
-        else if(op == ')'){
+        else if(op_top>0 && op_stack[op_top-1] == ')'){
             var_stack[var_top++] = '\0';
             eval();
             var_top--;
+            op_stack[op_top++] = op;
         }
         else{
             fprintf(stderr, "unary operator detected but not recognised: %c\n", op);

@@ -581,10 +581,11 @@ void op_push(char op){
         else if(op == '('){
             op_stack[op_top++] = '(';
         }
-        else if(op == ')'){
+        else if(op_top>0 && op_stack[op_top-1] == ')'){
             var_stack[var_top++] = '\0';
             eval();
             var_top--;
+            op_stack[op_top++] = op;
         }
         else{
             fprintf(stderr, "unary operator detected but not recognised: %c\n", op);
@@ -615,8 +616,8 @@ void print_tac(){
     }
 }
 
-#line 619 "lex.yy.c"
 #line 620 "lex.yy.c"
+#line 621 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -833,9 +834,9 @@ YY_DECL
 		}
 
 	{
-#line 183 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 184 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 839 "lex.yy.c"
+#line 840 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -894,31 +895,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 184 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 186 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 186 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 187 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 187 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 188 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 188 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 189 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 922 "lex.yy.c"
+#line 923 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1923,7 +1924,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 188 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 189 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){
