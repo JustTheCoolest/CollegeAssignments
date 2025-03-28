@@ -3,12 +3,11 @@
 To impliment:
 - Unary minus
 - Brackets
-- Bug: Precedence conflicts with brackets because var_stack vs op_stack
 */
 %}
 
-var [a-z()]
-op [=+*/-]
+var [a-z]
+op [()+*/-]
 
 %{
 float var_stack[100];
@@ -23,12 +22,7 @@ char start_char = 'A';
 
 void var_push(char var){
     var_stack[var_top++] = var;
-    if(var != '(' && var != ')'){
-        var_flag = 1;
-    }
-    else{
-        var_flag = 0; // Task: Verify logic in more detail
-    }
+    var_flag = 1;
 }
 
 struct tac_record{
@@ -40,46 +34,6 @@ struct tac_record{
 
 struct tac_record tac[100];
 int tac_top = 0;
-
-void op_push(char op){
-    if(!var_flag){
-        if(op == '-'){
-            op_stack[op_top++] = '#';
-        }
-        else{
-            fprintf(stderr, "unary operator detected but not recognised: %c\n", op);
-        }
-    }
-    else{
-        op_stack[op_top++] = op;
-    }
-    var_flag = 0;
-}
-
-int precedence(int op_pos){
-    if(op_pos<0){
-        fprintf(stderr, "op_pos not in stack bounds: %d", op_pos);
-    }
-    char op = op_stack[op_pos];
-    if(op == '#'){
-        return -5;
-    }
-    else if(op=='/'){
-        return -10;
-    }
-    else if(op=='*'){
-        return -10;
-    }
-    else if(op=='+'){
-        return -15;
-    }
-    else if(op=='-'){
-        return -15;
-    }
-    else{
-        fprintf(stderr, "operator not recognised: %c", op);
-    }
-}
 
 void execute(){
     char op = op_stack[--op_top];
@@ -108,45 +62,115 @@ void execute(){
     ++inst_counter;
 }
 
-void validate_open_bracket(){
-    if(var_top < 2){
-        fprintf(stderr, "syntax error: open bracket not found\n");
-        exit(1);
+
+int precedence(int op_pos){
+    if(op_pos<0){
+        fprintf(stderr, "op_pos not in stack bounds: %d", op_pos);
+    }
+    char op = op_stack[op_pos];
+    if(op == '#'){
+        return -5;
+    }
+    else if(op=='/'){
+        return -10;
+    }
+    else if(op=='*'){
+        return -10;
+    }
+    else if(op=='+'){
+        return -15;
+    }
+    else if(op=='-'){
+        return -15;
+    }
+    else{
+        fprintf(stderr, "operator not recognised: %c", op);
     }
 }
 
+int precedence_less_than(int op1_pos, int op2_pos){
+    char op1 = op_stack[op1_pos];
+    char op2 = op_stack[op2_pos];
+    if(op1 == '(' && op2 == ')'){
+        return 0;
+    }
+    if(op1 == '(' && op2 == '('){
+        return 0;
+    }
+    if(op1 == ')' && op2 == ')'){
+        return 1;
+    }
+    if(op1 == ')' && op2 == '('){
+        return 0;
+    }
+    if(op1 == '('){
+        return 0;
+    }
+    if(op2 == '('){
+        return 0;
+    }
+    if(op1 == ')'){
+        return 1;
+    }
+    if(op2 == ')'){
+        fprintf(stderr, "unevaluated inner brackets\n");
+    }
+    return precedence(op1_pos) < precedence(op2_pos);
+}
+
 void eval(){
-    if(var_stack[var_top-1] == '('){
-        return;
-    }
-    if(var_stack[var_top-1] == ')'){
-        var_stack[--var_top];
-        validate_open_bracket();
-        while(op_stack[var_top-2] != '('){
-            execute();
-            validate_open_bracket();
-        }
-        var_stack[var_top-2] = var_stack[var_top-1];
-        var_top--;
-        return;
-    }
-    while(op_top >= 2 && precedence(op_top-1) <= precedence(op_top-2)){
+    /* 
+    options:
+    1. precedence as ordered pair function
+    2. special if condition for brackets
+    */
+    while(op_top >= 2 && precedence_less_than(op_top-1, op_top-2)){
         char op = op_stack[--op_top];
         char var = var_stack[--var_top];
         execute();
         op_stack[op_top++] = op;
         var_stack[var_top++] = var;
     }
+    if(op_top>0 && op_stack[op_top-1] == ')'){
+        op_top -= 2;
+    }
 }
 
+void op_push(char op){
+    if(!var_flag){
+        if(op == '-'){
+            op_stack[op_top++] = '#';
+        }
+        else if(op == '('){
+            op_stack[op_top++] = '(';
+        }
+        else if(op == ')'){
+            var_stack[var_top++] = '\0';
+            eval();
+            var_top--;
+        }
+        else{
+            fprintf(stderr, "unary operator detected but not recognised: %c\n", op);
+        }
+    }
+    else{
+        op_stack[op_top++] = op;
+    }
+    var_flag = 0;
+}
 void clean_up(){
+    if(op_top>0 && op_stack[op_top-1] == ')'){
+        var_stack[var_top++] = '\0';
+        eval();
+        var_top--;
+    }
     while(op_top > 0){
         execute();
     }
 }
 
 void print_tac(){
-    printf("Quadruples:\n");
+    printf("Total instructions: %d\n", inst_counter);
     printf("res\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];
