@@ -218,15 +218,3 @@ int main(){
     yylex();
     print_tac();
 }
-
-// Task: Verify why left first is not working
-/*
-Quadruples
-addr    res     arg1    op      arg2
-0       A       a       +       b
-1       B       c       +       d
-2       C       x       +       y
-3       D       B       *       C
-4       E       A       *       D
-5       F       y       =       E
-*/
