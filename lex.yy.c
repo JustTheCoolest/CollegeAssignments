@@ -606,15 +606,26 @@ void clean_up(){
 void print_tac(){
     printf("\n");
     printf("Quadruples\n");
-    printf("res\targ1\top\targ2\n");
+    printf("addr\tres\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];
-        printf("%c\t%c\t%c\t%c\n", trec.res, trec.arg1, trec.op, trec.var);
+        printf("%d\t%c\t%c\t%c\t%c\n", i, trec.res, trec.arg1, trec.op, trec.var);
+    }
+    printf("\n");
+    // Task: Implement Triples more Faithfully
+    printf("Triples\n");
+    printf("addr\targ1\top\targ2\n");
+    for(int i=0; i<tac_top; ++i){
+        struct tac_record trec = tac[i];
+        // Task: Abstract the operation of converting a character to a number, to reduce redundancy
+        char arg1 = trec.arg1 >= 'A' && trec.arg1 <= 'Z' ? trec.arg1 - 'A' + '0' : trec.arg1;
+        char arg2 = trec.var >= 'A' && trec.var <= 'Z' ? trec.var - 'A' + '0' : trec.var;
+        printf("%d\t%c\t%c\t%c\n", i, arg1, trec.op, arg2);
     }
 }
 
-#line 617 "lex.yy.c"
-#line 618 "lex.yy.c"
+#line 628 "lex.yy.c"
+#line 629 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -831,9 +842,9 @@ YY_DECL
 		}
 
 	{
-#line 180 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 191 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 837 "lex.yy.c"
+#line 848 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -892,31 +903,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 181 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 192 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 182 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 193 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 183 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 194 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 184 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 195 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 196 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 920 "lex.yy.c"
+#line 931 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1921,7 +1932,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 185 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 196 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){

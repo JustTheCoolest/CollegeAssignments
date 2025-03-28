@@ -168,10 +168,21 @@ void clean_up(){
 void print_tac(){
     printf("\n");
     printf("Quadruples\n");
-    printf("res\targ1\top\targ2\n");
+    printf("addr\tres\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];
-        printf("%c\t%c\t%c\t%c\n", trec.res, trec.arg1, trec.op, trec.var);
+        printf("%d\t%c\t%c\t%c\t%c\n", i, trec.res, trec.arg1, trec.op, trec.var);
+    }
+    printf("\n");
+    // Task: Implement Triples more Faithfully
+    printf("Triples\n");
+    printf("addr\targ1\top\targ2\n");
+    for(int i=0; i<tac_top; ++i){
+        struct tac_record trec = tac[i];
+        // Task: Abstract the operation of converting a character to a number, to reduce redundancy
+        char arg1 = trec.arg1 >= 'A' && trec.arg1 <= 'Z' ? trec.arg1 - 'A' + '0' : trec.arg1;
+        char arg2 = trec.var >= 'A' && trec.var <= 'Z' ? trec.var - 'A' + '0' : trec.var;
+        printf("%d\t%c\t%c\t%c\n", i, arg1, trec.op, arg2);
     }
 }
 
