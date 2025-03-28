@@ -1,0 +1,144 @@
+1. How much effort do you put into maintaining a good sleep schedule?
+
+a. I consider it a priority and do not allow anything to compromise it  
+b. I consider it a priority but it is flexible  
+c. I don’t worry about it much. I do what is more fun.  
+d. I don’t sleep even when I can and even if I have nothing else to do  
+
+2. Working status
+
+a. School student up to 10th  
+b. Higher secondary school student (up to 12th)  
+c. Undergraduate student  
+d. Postgraduate student  
+e. PhD student  
+f. Full-time working professional  
+g. Part-time / freelancing  
+h. Business  
+i. Others (specify)  
+
+3. When do you sleep? [checkboxes]
+
+a. Night time  
+b. Naps at regular hours (afternoon, bus, etc.)  
+c. Naps at irregular hours (whenever you get time)  
+d. Day time (shifted sleep cycle)  
+
+4. Are there any factors that regularly disrupt your quality of sleep? [checkboxes]
+
+a. Mosquitoes  
+b. Lack of temperature regulation  
+c. Internal noise (family/roommates)  
+d. External noise (neighbours, traffic, construction work, etc.)  
+e. Lack of ventilation  
+f. Others (specify)  
+g. None  
+
+5. What determines your sleep time?
+
+a. I have a fixed sleep time that I strictly adhere to  
+b. My family has a fixed sleep time that I have to follow  
+c. Whenever I feel sleepy  
+d. When I'm done with my work/assignments/meetings  
+
+6. Is there something which prevents you from sleeping when you want?
+
+a. Work/assignments  
+b. Peer pressure  
+c. Social media addiction  
+d. Stress/anxiety  
+e. Romantic relationship  
+f. Late night parties/concerts  
+g. Preparation for competitive exams (JEE, NEET, UPSC, GATE, etc.)  
+h. Insomnia  
+i. None  
+
+7. How do you wake up?
+
+a. I wake up naturally  
+b. My family wakes me up  
+c. I have set alarms to wake up  
+
+8. What determines your wake-up time?
+
+a. I have to go to classes/work  
+b. I have religious obligations  
+c. I have responsibilities (ex: dropping child to school)  
+
+9. Do you feel any of the following after waking up? [checkboxes]
+
+a. Lingering drowsiness  
+b. Mental exhaustion  
+c. Physical exhaustion  
+d. Difficulty in focusing  
+e. Irritation/grumpiness  
+f. None  
+
+10. How long does it take you to be fully active after waking up?
+
+a. Instantly  
+b. A few minutes  
+c. 30 min to 1 hr  
+d. Over an hour  
+
+11. Do you use sleep aids?
+
+a. Regularly  
+b. Occasionally  
+c. Rarely  
+d. Never  
+
+12. Do you pull all-nighters?
+
+a. Regularly  
+b. Occasionally  
+c. Rarely  
+d. Never  
+
+13. If you pull all-nighters, why so? [checkboxes]
+
+a. Work  
+b. Entertainment  
+c. Travel  
+d. Unable to sleep  
+e. Not applicable  
+
+14. Does your sleep duration change on weekends/holidays?
+
+a. Yes, I sleep more  
+b. Yes, I sleep less  
+c. No  
+
+15. Have you ever wanted to be able to sleep more but were unable to do so?
+
+a. Yes  
+b. No  
+
+16. How many hours would you ideally want to sleep per day? (Numeric)  
+
+17. How many hours do you actually sleep per day? (Numeric)  
+
+18. Have you tried to consult doctors or therapists about your sleep?
+
+a. Yes, and they said it's fine  
+b. Yes, and they said it's not ideal, and gave me some suggestions  
+c. No, my sleep schedule is fine, and I don't need help  
+d. No, but I want to consult  
+e. No, and I don't care  
+
+19. If you don't have a fixed sleep schedule, are you considering making one?
+
+a. Not applicable to me (I already have one)  
+b. I'd like to make one  
+c. I will consider it, but I'm not really convinced  
+d. Sleep schedule, what's that?  
+
+20. A good sleep schedule is necessary for good mental and physical health. Your thoughts on this.
+
+a. Strongly agree  
+b. Agree  
+c. Neutral  
+d. Disagree  
+e. Strongly disagree  
+
+21. Any suggestions on what can be done to improve the overall sleep quality of the general population? (Text)
