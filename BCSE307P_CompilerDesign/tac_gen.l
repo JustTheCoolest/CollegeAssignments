@@ -21,7 +21,7 @@ int inst_counter = 0;
 char start_char = 'A';
 
 void var_push(char var){
-    var_stack[var_top++] = var_flag;
+    var_stack[var_top++] = var;
     var_flag = 1;
 }
 
@@ -41,7 +41,7 @@ void op_push(char op){
             op_stack[op_top++] = '#';
         }
         else{
-            fprintf(stderr, "unary operator detected but not recognised: %c", op);
+            fprintf(stderr, "unary operator detected but not recognised: %c\n", op);
         }
     }
     else{
@@ -85,7 +85,7 @@ void execute(){
             '-',
             arg2
         };
-        tac[++tac_top] = trec;
+        tac[tac_top++] = trec;
     }
     else{
         char arg1 = var_stack[--var_top];
@@ -95,7 +95,7 @@ void execute(){
             op,
             arg2
         };
-        tac[++tac_top] = trec;
+        tac[tac_top++] = trec;
     }
     ++inst_counter;
 }
@@ -117,7 +117,14 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Yet to be implimented.\n");
+    printf("Total instructions: %d\n", inst_counter);
+    printf("TAC Top: %d\n", tac_top);
+    printf("Quadruples:\n");
+    printf("res\targ1\top\targ2\n");
+    for(int i=0; i<tac_top; ++i){
+        struct tac_record trec = tac[i];
+        printf("%c\t%c\t%c\t%c\n", trec.res, trec.arg1, trec.op, trec.var);
+    }
 }
 
 %}

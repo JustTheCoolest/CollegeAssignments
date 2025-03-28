@@ -458,7 +458,7 @@ int inst_counter = 0;
 char start_char = 'A';
 
 void var_push(char var){
-    var_stack[var_top++] = var_flag;
+    var_stack[var_top++] = var;
     var_flag = 1;
 }
 
@@ -478,7 +478,7 @@ void op_push(char op){
             op_stack[op_top++] = '#';
         }
         else{
-            fprintf(stderr, "unary operator detected but not recognised: %c", op);
+            fprintf(stderr, "unary operator detected but not recognised: %c\n", op);
         }
     }
     else{
@@ -522,7 +522,7 @@ void execute(){
             '-',
             arg2
         };
-        tac[++tac_top] = trec;
+        tac[tac_top++] = trec;
     }
     else{
         char arg1 = var_stack[--var_top];
@@ -532,7 +532,7 @@ void execute(){
             op,
             arg2
         };
-        tac[++tac_top] = trec;
+        tac[tac_top++] = trec;
     }
     ++inst_counter;
 }
@@ -554,11 +554,18 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Yet to be implimented.\n");
+    printf("Total instructions: %d\n", inst_counter);
+    printf("TAC Top: %d\n", tac_top);
+    printf("Quadruples:\n");
+    printf("res\targ1\top\targ2\n");
+    for(int i=0; i<tac_top; ++i){
+        struct tac_record trec = tac[i];
+        printf("%c\t%c\t%c\t%c\n", trec.res, trec.arg1, trec.op, trec.var);
+    }
 }
 
-#line 561 "lex.yy.c"
-#line 562 "lex.yy.c"
+#line 568 "lex.yy.c"
+#line 569 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -775,9 +782,9 @@ YY_DECL
 		}
 
 	{
-#line 125 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 132 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 781 "lex.yy.c"
+#line 788 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -836,31 +843,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 126 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 133 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 127 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 134 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 128 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 135 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 129 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 136 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 130 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 864 "lex.yy.c"
+#line 871 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1865,7 +1872,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 130 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){
