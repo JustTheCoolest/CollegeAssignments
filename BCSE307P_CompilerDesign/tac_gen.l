@@ -3,11 +3,12 @@
 To impliment:
 - Unary minus
 - Brackets
+- Bug: Precedence conflicts with brackets because var_stack vs op_stack
 */
 %}
 
-var [a-z]
-op [+*/-]
+var [a-z()]
+op [=+*/-]
 
 %{
 float var_stack[100];
@@ -22,7 +23,12 @@ char start_char = 'A';
 
 void var_push(char var){
     var_stack[var_top++] = var;
-    var_flag = 1;
+    if(var != '(' && var != ')'){
+        var_flag = 1;
+    }
+    else{
+        var_flag = 0; // Task: Verify logic in more detail
+    }
 }
 
 struct tac_record{
@@ -102,7 +108,28 @@ void execute(){
     ++inst_counter;
 }
 
+void validate_open_bracket(){
+    if(var_top < 2){
+        fprintf(stderr, "syntax error: open bracket not found\n");
+        exit(1);
+    }
+}
+
 void eval(){
+    if(var_stack[var_top-1] == '('){
+        return;
+    }
+    if(var_stack[var_top-1] == ')'){
+        var_stack[--var_top];
+        validate_open_bracket();
+        while(op_stack[var_top-2] != '('){
+            execute();
+            validate_open_bracket();
+        }
+        var_stack[var_top-2] = var_stack[var_top-1];
+        var_top--;
+        return;
+    }
     while(op_top >= 2 && precedence(op_top-1) <= precedence(op_top-2)){
         char op = op_stack[--op_top];
         char var = var_stack[--var_top];
@@ -119,7 +146,7 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Total instructions: %d\n", inst_counter);
+    printf("Quadruples:\n");
     printf("res\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
         struct tac_record trec = tac[i];

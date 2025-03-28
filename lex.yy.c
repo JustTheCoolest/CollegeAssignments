@@ -362,7 +362,7 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[10] =
     {   0,
-        0,    0,    6,    5,    4,    1,    3,    2,    0
+        0,    0,    6,    5,    4,    1,    2,    3,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -370,17 +370,17 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    2,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    3,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    4,    4,    1,    4,    1,    4,    1,    1,    1,
+        1,    3,    1,    1,    1,    1,    1,    1,    1,    4,
+        4,    5,    5,    1,    5,    1,    5,    1,    1,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+        5,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    5,    5,    5,    5,
+        1,    1,    1,    1,    1,    1,    4,    4,    4,    4,
 
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    5,    5,    5,
-        5,    5,    1,    1,    1,    1,    1,    1,    1,    1,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
+        4,    4,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -459,7 +459,12 @@ char start_char = 'A';
 
 void var_push(char var){
     var_stack[var_top++] = var;
-    var_flag = 1;
+    if(var != '(' && var != ')'){
+        var_flag = 1;
+    }
+    else{
+        var_flag = 0; // Task: Verify logic in more detail
+    }
 }
 
 struct tac_record{
@@ -539,13 +544,34 @@ void execute(){
     ++inst_counter;
 }
 
+void validate_open_bracket(){
+    if(var_top < 2){
+        fprintf(stderr, "syntax error: open bracket not found\n");
+        exit(1);
+    }
+}
+
 void eval(){
+    if(var_stack[var_top-1] == '('){
+        return;
+    }
+    if(var_stack[var_top-1] == ')'){
+        var_stack[--var_top];
+        validate_open_bracket();
+        while(op_stack[var_top-2] != '('){
+            execute();
+            validate_open_bracket();
+        }
+        var_stack[var_top-2] = var_stack[var_top-1];
+        var_top--;
+        return;
+    }
     while(op_top >= 2 && precedence(op_top-1) <= precedence(op_top-2)){
         char op = op_stack[--op_top];
         char var = var_stack[--var_top];
         execute();
         op_stack[op_top++] = op;
-        var_stack[var_top++] = op;
+        var_stack[var_top++] = var;
     }
 }
 
@@ -556,8 +582,6 @@ void clean_up(){
 }
 
 void print_tac(){
-    printf("Total instructions: %d\n", inst_counter);
-    printf("TAC Top: %d\n", tac_top);
     printf("Quadruples:\n");
     printf("res\targ1\top\targ2\n");
     for(int i=0; i<tac_top; ++i){
@@ -566,8 +590,8 @@ void print_tac(){
     }
 }
 
-#line 570 "lex.yy.c"
-#line 571 "lex.yy.c"
+#line 594 "lex.yy.c"
+#line 595 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -784,9 +808,9 @@ YY_DECL
 		}
 
 	{
-#line 134 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 158 "BCSE307P_CompilerDesign/tac_gen.l"
 
-#line 790 "lex.yy.c"
+#line 814 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -845,31 +869,31 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 135 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 159 "BCSE307P_CompilerDesign/tac_gen.l"
 {}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 136 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 160 "BCSE307P_CompilerDesign/tac_gen.l"
 {var_push(yytext[0]); eval();}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 137 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 161 "BCSE307P_CompilerDesign/tac_gen.l"
 {op_push(yytext[0]);}
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 138 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 162 "BCSE307P_CompilerDesign/tac_gen.l"
 {clean_up();}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 139 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 163 "BCSE307P_CompilerDesign/tac_gen.l"
 ECHO;
 	YY_BREAK
-#line 873 "lex.yy.c"
+#line 897 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1874,7 +1898,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 139 "BCSE307P_CompilerDesign/tac_gen.l"
+#line 163 "BCSE307P_CompilerDesign/tac_gen.l"
 
 
 int main(){
