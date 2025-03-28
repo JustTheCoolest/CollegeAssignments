@@ -2,7 +2,7 @@ var [a-z]
 op [=()+*/-]
 
 %{
-float var_stack[100];
+char var_stack[100];
 char op_stack[100];
 unsigned int var_top = 0;
 unsigned int op_top = 0;
@@ -113,6 +113,22 @@ int precedence_less_than(int op1_pos, int op2_pos){
     return precedence(op1_pos) <= precedence(op2_pos);
 }
 
+void print_var_stack(){
+    printf("var_stack: ");
+    for(int i=0; i<var_top; ++i){
+        printf("%c ", var_stack[i]);
+    }
+    printf("\n");
+}
+
+void print_op_stack(){
+    printf("op_stack: ");
+    for(int i=0; i<op_top; ++i){
+        printf("%c ", op_stack[i]);
+    }
+    printf("\n");
+}
+
 void eval(){
     /* 
     options:
@@ -129,6 +145,8 @@ void eval(){
     if(op_top>0 && op_stack[op_top-1] == ')'){
         op_top -= 2;
     }
+    // print_var_stack();
+    // print_op_stack();
 }
 
 void op_push(char op){
@@ -161,6 +179,7 @@ void clean_up(){
         var_top--;
     }
     while(op_top > 0){
+        eval();
         execute();
     }
 }
@@ -199,3 +218,15 @@ int main(){
     yylex();
     print_tac();
 }
+
+// Task: Verify why left first is not working
+/*
+Quadruples
+addr    res     arg1    op      arg2
+0       A       a       +       b
+1       B       c       +       d
+2       C       x       +       y
+3       D       B       *       C
+4       E       A       *       D
+5       F       y       =       E
+*/
