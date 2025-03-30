@@ -18,7 +18,7 @@ bool acceptance_flag = false;
 
 /*
 e, e, s4, e, s5, e, t1, t2, t3
-s5, e, e, e, e, a, e, e, e
+s6, e, e, e, e, a, e, e, e
 r2, s7, e, r2, e, r2, e, e, e
 r4, r4, e, r4, e, r4, e, e, e
 e, e, s4, e, s5, e, t8, t2, t3
@@ -48,7 +48,7 @@ constexpr auto action_table = std::array{
 
 constexpr auto transition_table = std::array{
     std::array{-1, -1, 4, -1, 5, -1, 1, 2, 3},
-    std::array{5, -1, -1, -1, -1, -1, -1, -1, -1},
+    std::array{6, -1, -1, -1, -1, -1, -1, -1, -1},
     std::array{2, 7, -1, 2, -1, 2, -1, -1, -1},
     std::array{4, 4, -1, 4, -1, 4, -1, -1, -1},
     std::array{-1, -1, 4, -1, 5, -1, 8, 2, 3},
@@ -91,7 +91,7 @@ void handle(char input){
         }
         case 'r':{
             int rule = transition_table[state][inp_index];
-            // char head = elements[heads[rule]];
+            char head = elements[heads[rule]];
             int size = sizes[rule];
             if(state_stack.size() < size || symbol_stack.size() < size){
                 fprintf(stderr, "RuntimeError: Reduce operation trying to remove more than available in the stacks");
@@ -101,6 +101,7 @@ void handle(char input){
                 state_stack.pop();
                 symbol_stack.pop();
             }
+            handle(head);
             handle(input);
             break;
         }
