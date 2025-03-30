@@ -10,8 +10,8 @@ F -> (E) / id
 constexpr array<const char, 9> elements {'+', '*', '(', ')', 'i', '$', 'E', 'T', 'F'};
 constexpr auto terminals = std::array {0, 1, 2, 3, 4, 5};
 constexpr auto non_terminals = std::array {6, 7, 8};
-constexpr auto heads = std::array {6, 6, 7, 7, 8, 8};
-constexpr auto sizes = std::array {3, 1, 3, 1, 3, 1};
+constexpr auto heads = std::array {-1, 6, 6, 7, 7, 8, 8};
+constexpr auto sizes = std::array {-1, 3, 1, 3, 1, 3, 1};
 
 bool error_flag = false;
 bool acceptance_flag = false;
@@ -19,13 +19,14 @@ bool acceptance_flag = false;
 /*
 e, e, s4, e, s5, e, t1, t2, t3
 s5, e, e, e, e, a, e, e, e
-r2, s6, e, r2, e, r2, e, e, e
+r2, s7, e, r2, e, r2, e, e, e
 r4, r4, e, r4, e, r4, e, e, e
 e, e, s4, e, s5, e, t8, t2, t3
-r6, r6, s4, r6, s5, r6, e, t9, t3
+r6, r6, e, r6, e, r6, e, e, e
+e, e, s4, e, s5, e, e, t9, t3
 e, e, s4, e, s5, e, e, e, t10
 s6, e, e, s11, e, e, e, e, e
-r1, e, e, r1, e, r1, e, e, e
+r1, s7, e, r1, e, r1, e, e, e
 r3, r3, e, r3, e, r3, e, e, e
 r5, r5, e, r5, e, r5, e, e, e
 */
@@ -36,10 +37,11 @@ constexpr auto action_table = std::array{
     std::array{'r', 's', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
     std::array{'r', 'r', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
     std::array{'e', 'e', 's', 'e', 's', 'e', 't', 't', 't'},
-    std::array{'r', 'r', 's', 'r', 's', 'r', 'e', 't', 't'},
+    std::array{'r', 'r', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
+    std::array{'e', 'e', 's', 'e', 's', 'e', 'e', 't', 't'},
     std::array{'e', 'e', 's', 'e', 's', 'e', 'e', 'e', 't'},
     std::array{'s', 'e', 'e', 's', 'e', 'e', 'e', 'e', 'e'},
-    std::array{'r', 'e', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
+    std::array{'r', 's', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
     std::array{'r', 'r', 'e', 'r', 'e', 'r', 'e', 'e', 'e'},
     std::array{'r', 'r', 'e', 'r', 'e', 'r', 'e', 'e', 'e'}
 };
@@ -47,13 +49,14 @@ constexpr auto action_table = std::array{
 constexpr auto transition_table = std::array{
     std::array{-1, -1, 4, -1, 5, -1, 1, 2, 3},
     std::array{5, -1, -1, -1, -1, -1, -1, -1, -1},
-    std::array{2, 6, -1, 2, -1, 2, -1, -1, -1},
+    std::array{2, 7, -1, 2, -1, 2, -1, -1, -1},
     std::array{4, 4, -1, 4, -1, 4, -1, -1, -1},
     std::array{-1, -1, 4, -1, 5, -1, 8, 2, 3},
-    std::array{6, 6, 4, 6, 5, 6, -1, 9, 3},
+    std::array{6, 6, -1, 6, -1, 6, -1, -1, -1},
+    std::array{-1, -1, 4, -1, 5, -1, -1, 9, 3},
     std::array{-1, -1, 4, -1, 5, -1, -1, -1, 10},
     std::array{6, -1, -1, 11, -1, -1, -1, -1, -1},
-    std::array{1, -1, -1, 1, -1, 1, -1, -1, -1},
+    std::array{1, 7, -1, 1, -1, 1, -1, -1, -1},
     std::array{3, 3, -1, 3, -1, 3, -1, -1, -1},
     std::array{5, 5, -1, 5, -1, 5, -1, -1, -1}
 };
@@ -88,7 +91,7 @@ void handle(char input){
         }
         case 'r':{
             int rule = transition_table[state][inp_index];
-            char head = elements[heads[rule]];
+            // char head = elements[heads[rule]];
             int size = sizes[rule];
             if(state_stack.size() < size || symbol_stack.size() < size){
                 fprintf(stderr, "RuntimeError: Reduce operation trying to remove more than available in the stacks");
