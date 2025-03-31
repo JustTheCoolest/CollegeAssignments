@@ -24,33 +24,13 @@ map<string, set<string>> computeFirst(const Grammar &grammar) {
         FIRST[terminal].insert(terminal);
     }
 
-    bool changed = true;
-    while (changed) {
-        changed = false;
+    HashMap<string, vector<vector<string>>> productions {};
+    for (const auto &[head, body] : grammar.P) {
+        productions[head].push_back(body);
+    }
 
-        // Iterate over all productions
-        for (const auto &[nonTerminal, production] : grammar.P) {
-            bool epsilonInPrevious = true;
-
-            for (const string &symbol : production) {
-                if (!epsilonInPrevious) break;
-
-                // Add FIRST(symbol) to FIRST(nonTerminal)
-                for (const string &terminal : FIRST[symbol]) {
-                    if (terminal != "#" && FIRST[nonTerminal].insert(terminal).second) {
-                        changed = true;
-                    }
-                }
-
-                // Check if epsilon is in FIRST(symbol)
-                epsilonInPrevious = FIRST[symbol].count("#") > 0;
-            }
-
-            // If all symbols in production can derive epsilon, add epsilon to FIRST(nonTerminal)
-            if (epsilonInPrevious && FIRST[nonTerminal].insert("#").second) {
-                changed = true;
-            }
-        }
+    for(const auto &[head, bodies] : productions){
+        FIRST[head] = findFirst(head, productions, FIRST);
     }
 
     return FIRST;
