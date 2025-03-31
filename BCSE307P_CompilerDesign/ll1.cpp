@@ -15,8 +15,57 @@ struct Grammar {
     string S; // Start symbol
 };
 
+// Function to compute FIRST set for a given symbol
+set<string> findFirst(const string &symbol, const map<string, set<vector<string>>> &productions, const map<string, set<string>> &FIRST) {
+    if(FIRST.find(symbol) != FIRST.end()){
+        return FIRST.at(symbol);
+    }
+
+    set<vector<string>> delayed_productions {}; // Task: Implement as pointers or references
+
+    set<string> firstSet;
+    for(const auto &body : productions.at(symbol)){
+        for(const auto &body_symbol : body){
+            if(body_symbol == symbol){
+                delayed_productions.insert(body);
+                break;
+            }
+            set<string> body_first = findFirst(body_symbol, productions, FIRST);
+            firstSet.insert(body_first.begin(), body_first.end());
+            if(body_first.find("#") == body_first.end()){
+                break;
+            }
+        }
+        else{
+            firstSet.insert("#");
+        }
+    }
+
+    if(firstSet.find("#") == firstSet.end()){
+        return firstSet;
+    }
+
+    for(const auto &body : delayed_productions){
+        for(const auto &body_symbol : body){
+            if(body_symbol == symbol){
+                continue;
+            }
+            set<string> body_first = findFirst(body_symbol, productions, FIRST);
+            firstSet.insert(body_first.begin(), body_first.end());
+            if(body_first.find("#") == body_first.end()){
+                break;
+            }
+        }
+        else{
+            firstSet.insert("#");
+        }
+    }
+
+    return firstSet;
+}
+
 // Function to compute FIRST set
-map<string, set<string>> computeFirst(const Grammar &grammar) {
+map<string, set<string>> computeFirsts(const Grammar &grammar) {
     map<string, set<string>> FIRST;
 
     // Initialize FIRST sets for terminals
@@ -24,9 +73,10 @@ map<string, set<string>> computeFirst(const Grammar &grammar) {
         FIRST[terminal].insert(terminal);
     }
 
-    HashMap<string, vector<vector<string>>> productions {};
+    // Use std::map instead of HashMap
+    map<string, set<vector<string>>> productions;
     for (const auto &[head, body] : grammar.P) {
-        productions[head].push_back(body);
+        productions[head].insert(body);
     }
 
     for(const auto &[head, bodies] : productions){
