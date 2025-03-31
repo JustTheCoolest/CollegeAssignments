@@ -24,9 +24,13 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
     set<vector<string>> delayed_productions {}; // Task: Implement as pointers or references
 
     set<string> firstSet;
-    for(const auto &body : productions.at(symbol)){
+    
+    lambda void _process_body(string symbol, vector<string> &body, set<vector<string>> &delayed_productions, const map<string, set<vector<string>>> &productions, const map<string, set<string>> &FIRST, set<string> &firstSet, bool break_flag){
         for(const auto &body_symbol : body){
             if(body_symbol == symbol){
+                if(!break_flag){
+                    continue;
+                }
                 delayed_productions.insert(body);
                 break;
             }
@@ -41,24 +45,16 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
         }
     }
 
+    for(const auto &body : productions.at(symbol)){
+        _process_body(symbol, body, true);
+    }
+
     if(firstSet.find("#") == firstSet.end()){
         return firstSet;
     }
 
-    for(const auto &body : delayed_productions){
-        for(const auto &body_symbol : body){
-            if(body_symbol == symbol){
-                continue;
-            }
-            set<string> body_first = findFirst(body_symbol, productions, FIRST);
-            firstSet.insert(body_first.begin(), body_first.end());
-            if(body_first.find("#") == body_first.end()){
-                break;
-            }
-        }
-        else{
-            firstSet.insert("#");
-        }
+    for(const auto &body : productions.at(symbol)){
+        _process_body(symbol, body, false);
     }
 
     return firstSet;
@@ -115,7 +111,7 @@ int main() {
     };
 
     // Compute FIRST sets
-    map<string, set<string>> FIRST = computeFirst(grammar);
+    map<string, set<string>> FIRST = computeFirsts(grammar);
 
     // Print FIRST sets
     printFirst(FIRST);
