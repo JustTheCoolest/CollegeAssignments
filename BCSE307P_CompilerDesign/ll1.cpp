@@ -16,7 +16,11 @@ struct Grammar {
 };
 
 // Function to compute FIRST set for a given symbol
-set<string> findFirst(const string &symbol, const map<string, set<vector<string>>> &productions, const map<string, set<string>> &FIRST) {
+set<string> findFirst(const string &symbol, const map<string, set<vector<string>>> &productions, map<string, set<string>> &FIRST) {
+    if(symbol == "#"){
+        return {"#"}; // Task: Add validation to ensure that N -> t# does not get counted as an epsilon production (non standard grammar notation)
+    }
+
     if(FIRST.find(symbol) != FIRST.end()){
         return FIRST.at(symbol);
     }
@@ -55,6 +59,7 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
 
     // If epsilon (#) is not in the FIRST set, return it
     if (firstSet.find("#") == firstSet.end()) {
+        FIRST[symbol] = firstSet;
         return firstSet;
     }
 
@@ -63,6 +68,7 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
         _process_body(symbol, body, false);
     }
 
+    FIRST[symbol] = firstSet;
     return firstSet;
 }
 
@@ -103,7 +109,7 @@ int main() {
     // Define the grammar
     Grammar grammar;
     grammar.N = {"E", "E'", "T", "T'", "F"};
-    grammar.T = {"+", "*", "(", ")", "i", "d", "#"}; // '#' represents epsilon
+    grammar.T = {"+", "*", "(", ")", "id", "#"}; // '#' represents epsilon
     grammar.S = "E";
     grammar.P = {
         {"E", {"T", "E'"}},
