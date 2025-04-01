@@ -7,15 +7,13 @@
 
 using namespace std;
 
-// Grammar structure
 struct Grammar {
-    unordered_set<string> N; // Non-terminals (HashSet equivalent)
-    unordered_set<string> T; // Terminals
-    set<pair<string, vector<string>>> P; // Productions
-    string S; // Start symbol
+    unordered_set<string> N;
+    unordered_set<string> T;
+    set<pair<string, vector<string>>> P;
+    string S;
 };
 
-// Function to compute FIRST set for a given symbol
 set<string> findFirst(const string &symbol, const map<string, set<vector<string>>> &productions, map<string, set<string>> &FIRST) {
     if(symbol == "#"){
         return {"#"}; // Task: Add validation to ensure that N -> t# does not get counted as an epsilon production (non standard grammar notation)
@@ -29,7 +27,6 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
 
     set<string> firstSet;
 
-    // Define the _process_body lambda function
     auto _process_body = [&](const string &symbol, const vector<string> &body, bool break_flag) {
         bool broken_flag = false;
         for (const auto &body_symbol : body) {
@@ -52,18 +49,15 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
         }
     };
 
-    // Process productions with break_flag = true
     for (const auto &body : productions.at(symbol)) {
         _process_body(symbol, body, true);
     }
 
-    // If epsilon (#) is not in the FIRST set, return it
     if (firstSet.find("#") == firstSet.end()) {
         FIRST[symbol] = firstSet;
         return firstSet;
     }
 
-    // Process productions with break_flag = false
     for (const auto &body : delayed_productions) {
         _process_body(symbol, body, false);
     }
@@ -72,16 +66,13 @@ set<string> findFirst(const string &symbol, const map<string, set<vector<string>
     return firstSet;
 }
 
-// Function to compute FIRST set
 map<string, set<string>> computeFirsts(const Grammar &grammar) {
     map<string, set<string>> FIRST;
 
-    // Initialize FIRST sets for terminals
     for (const string &terminal : grammar.T) {
         FIRST[terminal].insert(terminal);
     }
 
-    // Use std::map instead of HashMap
     map<string, set<vector<string>>> productions;
     for (const auto &[head, body] : grammar.P) {
         productions[head].insert(body);
@@ -94,7 +85,6 @@ map<string, set<string>> computeFirsts(const Grammar &grammar) {
     return FIRST;
 }
 
-// Helper function to print FIRST sets
 void printFirst(const map<string, set<string>> &FIRST) {
     for (const auto &[symbol, firstSet] : FIRST) {
         cout << "FIRST(" << symbol << ") = { ";
@@ -106,10 +96,9 @@ void printFirst(const map<string, set<string>> &FIRST) {
 }
 
 int main() {
-    // Define the grammar
     Grammar grammar;
     grammar.N = {"E", "E'", "T", "T'", "F"};
-    grammar.T = {"+", "*", "(", ")", "id", "#"}; // '#' represents epsilon
+    grammar.T = {"+", "*", "(", ")", "id", "#"};
     grammar.S = "E";
     grammar.P = {
         {"E", {"T", "E'"}},
@@ -122,10 +111,8 @@ int main() {
         {"F", {"id"}}
     };
 
-    // Compute FIRST sets
     map<string, set<string>> FIRST = computeFirsts(grammar);
 
-    // Print FIRST sets
     printFirst(FIRST);
 
     return 0;
