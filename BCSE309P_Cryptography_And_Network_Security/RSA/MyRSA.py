@@ -27,7 +27,7 @@ def generate_key():
     n = p*q
     e = generate_e(phi)
     d = mod_inv(e, phi)
-    return (n, e), (n, d)
+    return (n, d), (n, e)
 
 def encrypt(text, key):
     text = [ord(char) for char in text]

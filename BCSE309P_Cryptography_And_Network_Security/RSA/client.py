@@ -11,7 +11,7 @@ s.send("Hello from client".encode())
 msg = s.recv(1024)
 print("Server's message:", msg.decode())
 
-s.send("REQUEST")
+s.send("REQUEST".encode())
 print("Sent connection request to server.")
 
 msg = s.recv(1024)
