@@ -11,8 +11,8 @@ To be replaced:
 e_iterator = 0
 
 def generate_primes():
-    # return 101, 97
-    return 5, 7
+    return 101, 97
+    # return 5, 7
 
 def generate_e(phi):
     global e_iterator
@@ -51,7 +51,8 @@ def mod_inv(a, n):
     return result
 
 def mod_exp(v, a, n):
-    return (v ** a) % n
+    # return (v ** a) % n
+    return pow(v, a, mod=n)
 
 def generate_key():
     p, q = generate_primes()
@@ -72,9 +73,11 @@ def encrypt(text, key):
     n, a = key
     def enc(v):
         return mod_exp(v, a, n)
-    map(enc, text)
+    text = map(enc, text)
     text = [chr(char) for char in text]
-    return "".join(text)
+    result = "".join(text)
+    # print(f"Encryptor's log: {result}")
+    return result
 
 def decrypt(text, key):
     return encrypt(text, key)
