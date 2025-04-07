@@ -20,6 +20,8 @@ def to_hex(num, NUM_SIZE):
     # Convert the number to a hexadecimal string and pad it to NUM_SIZE bytes
     hex_str = hex(num)[2:]  # Remove the '0x' prefix
     hex_str = hex_str.zfill(NUM_SIZE * 2)  # Pad to NUM_SIZE bytes (2 hex digits per byte)
+    print(len(hex_str), hex_str)
+    assert len(hex_str) == NUM_SIZE * 2
     return hex_str
 
 def rotr(n, x, NUM_SIZE):
@@ -92,11 +94,14 @@ def sha(message, NUM_SIZE, NUM_ROUNDS):
             X.append((x+y)%mod_base)
         H = X
 
+    print(H, len(H))
+    assert len(H) == 8
+
     result = ""
     for comp in H:
         result += to_hex(comp, NUM_SIZE)
 
-    assert len(result) == 16 * NUM_SIZE * 2
+    assert len(result) == 8 * NUM_SIZE * 2
 
     return result
 
