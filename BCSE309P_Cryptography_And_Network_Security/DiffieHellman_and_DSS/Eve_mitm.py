@@ -5,9 +5,10 @@ import MyElgamalDSS as MyDSS
 """
 Notes:
 1. Can demonstrate the infiltration by using symmetric encryption like AES
+2. For the DSS part, MITM some steps were skipped, because signature verification will fail anyway (it's just demonstratiion)
 """
 
-listening_port = 1500
+listening_port = 61500
 
 s1 = socket.socket()
 s1.bind(('', listening_port))
@@ -79,7 +80,7 @@ print("Attempting to verify Bob's signature with Alice's DSS public key...")
 verification = MyDSS.verify_signature(
     (alice_identifier, my_public1, bob_identifier, bob_public),
     bob_signature,
-    my_public1
+    (p, g, my_public1)
 )
 if not verification:
     print("Signature verification failed. DSS prevents MITM attack.")

@@ -3,10 +3,16 @@ Notes:
 1. A better hash function like SHA can be used
 """
 
+import random
+import math
+
+from MyDiffieHellman import get_shared_initial_value, get_private_key, get_public_key
+
 def get_keys():
     p, g = get_shared_initial_value()
     private_key = get_private_key(p)
     public_key = get_public_key(g, private_key, p)
+    public_key = (p, g, public_key)
     return private_key, public_key
 
 def mod_inv(a, n):

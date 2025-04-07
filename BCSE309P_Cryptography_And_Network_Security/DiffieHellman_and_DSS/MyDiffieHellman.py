@@ -1,3 +1,6 @@
+import random
+import math
+
 def get_shared_initial_value():
     p = 23  # A prime number
     g = 5   # A primitive root modulo p

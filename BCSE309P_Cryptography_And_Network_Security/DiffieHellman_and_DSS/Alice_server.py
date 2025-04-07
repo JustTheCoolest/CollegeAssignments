@@ -4,8 +4,8 @@ import MyElgamalDSS as MyDSS
 
 port = 12345
 
-def get_my_addr(s):
-    hostname = socket.gethostname(s)
+def get_my_addr():
+    hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
     return (ip_address, port)
 
@@ -45,7 +45,7 @@ print(f"My DSS private key (not sent): {dss_private}")
 my_private = MyDiffieHellman.get_private_key(p)
 my_public = MyDiffieHellman.get_public_key(g, my_private, p)
 my_identifier = get_my_addr()
-sign = MyDSS.get_signature((addr, cpublic, my_identifier, my_public))
+sign = MyDSS.get_signature((addr, cpublic, my_identifier, my_public), dss_private, dss_public)
 
 c.send(f"{dss_public} {my_public} {my_identifier} {sign}".encode())
 print(f"My DSS public key, public key, identifier, and signature (sent): {dss_public}, {my_public}, {my_identifier}, {sign}")

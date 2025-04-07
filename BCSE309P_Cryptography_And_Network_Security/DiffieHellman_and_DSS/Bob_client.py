@@ -2,7 +2,7 @@ import socket
 import MyDiffieHellman
 import MyElgamalDSS as MyDSS
 
-port = 1500
+port = 61500
 
 def get_my_addr():
     hostname = socket.gethostname()
@@ -56,7 +56,7 @@ print(f"Received Alice's public key, DSS public key, identifier, and signature: 
 verification = MyDSS.verify_signature(
     (alice_identifier, alice_public, get_my_addr(), bob_public),
     alice_signature,
-    alice_dss_public
+    (p, g, alice_dss_public)
 )
 
 if not verification:
@@ -74,7 +74,8 @@ print(f"My DSS public key (sent): {bob_dss_public}")
 bob_identifier = get_my_addr()
 bob_signature = MyDSS.get_signature(
     (bob_identifier, bob_public, alice_identifier, alice_public),
-    bob_dss_private
+    bob_dss_private,
+    (p, g, bob_dss_public)
 )
 s.send(f"{bob_dss_public} {bob_identifier} {bob_signature}".encode())
 print(f"My DSS public key, identifier, and signature (sent): {bob_dss_public}, {bob_identifier}, {bob_signature}")
