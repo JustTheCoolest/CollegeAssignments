@@ -1,3 +1,11 @@
+"""
+References:
+1. Cryptography and Network Security, William Stallings
+2. https://www.movable-type.co.uk/scripts/sha256.html
+3. https://stepansnigirev.github.io/visual-sha256/
+4. https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
+"""
+
 import math
 
 # Constants for SHA-256
