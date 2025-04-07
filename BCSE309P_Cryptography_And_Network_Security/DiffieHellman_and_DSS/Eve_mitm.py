@@ -6,6 +6,7 @@ import MyElgamalDSS as MyDSS
 Notes:
 1. Can demonstrate the infiltration by using symmetric encryption like AES
 2. For the DSS part, MITM some steps were skipped, because signature verification will fail anyway (it's just demonstratiion)
+3. A more faithful MITM would be needed to correctly demonstrate the DSS security
 """
 
 listening_port = 61500
@@ -62,27 +63,29 @@ print(f"Received p, g, and public key from Bob: p={p}, g={g}, bob_public={bob_pu
 s2.send(f"{p} {g} {bob_public}".encode())
 print(f"Sent p, g, and public key to Alice: p={p}, g={g}, bob_public={bob_public}")
 
-msg = c.recv(1024).decode()
-bob_identifier, bob_signature = msg.rsplit(' ', 1)
-bob_signature = tuple(map(int, bob_signature.split()))
-print(f"Identifier and signature received from Bob: {bob_identifier}, {bob_signature}")
-
-s2.send(f"{bob_identifier} {bob_signature}".encode())
+# Receive DSS public key, Alice's public key, identifier, and signature
 msg = s2.recv(1024).decode()
-alice_identifier, alice_signature = msg.rsplit(' ', 1)
-alice_signature = tuple(map(int, alice_signature.split()))
-print(f"Identifier and signature received from Alice: {alice_identifier}, {alice_signature}")
+dss_public, alice_public, alice_identifier, sign = eval(msg)
+print(f"Received DSS public key, Alice's public key, identifier, and signature: {dss_public}, {alice_public}, {alice_identifier}, {sign}")
 
-c.send(f"{alice_identifier} {alice_signature}".encode())
+# Forward DSS public key, Alice's public key, identifier, and signature to Bob
+c.send(f"{dss_public}, {alice_public}, {alice_identifier}, {(sign[0], sign[1])}".encode())
+print(f"Forwarded DSS public key, Alice's public key, identifier, and signature to Bob.")
 
-# Attempt to verify signatures (will fail if DSS is implemented correctly)
-print("Attempting to verify Bob's signature with Alice's DSS public key...")
-verification = MyDSS.verify_signature(
-    (alice_identifier, my_public1, bob_identifier, bob_public),
-    bob_signature,
-    (p, g, my_public1)
-)
-if not verification:
-    print("Signature verification failed. DSS prevents MITM attack.")
-else:
-    print("Signature verification passed. MITM attack successful (unexpected).")
+# # Receive Bob's DSS public key, public key, identifier, and signature
+# msg = c.recv(1024).decode()
+# bob_dss_public, bob_public, bob_identifier, bob_sign = msg.split(' ', 3)
+# bob_dss_public = int(bob_dss_public)
+# bob_public = int(bob_public)
+# bob_identifier = eval(bob_identifier)  # Convert string back to tuple
+# bob_sign = tuple(map(int, bob_sign.split()))
+# print(f"Received Bob's DSS public key, public key, identifier, and signature: {bob_dss_public}, {bob_public}, {bob_identifier}, {bob_sign}")
+
+# # Forward Bob's DSS public key, public key, identifier, and signature to Alice
+# s2.send(f"{bob_dss_public} {bob_public} {bob_identifier} {bob_sign[0]} {bob_sign[1]}".encode())
+# print(f"Forwarded Bob's DSS public key, public key, identifier, and signature to Alice.")
+
+# # Close connections
+# c.close()
+# s2.close()
+# print("MITM attack completed.")

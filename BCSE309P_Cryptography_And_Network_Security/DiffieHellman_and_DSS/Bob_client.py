@@ -44,38 +44,32 @@ print("Diffie-Hellman with DSS:")
 s.send(f"{p} {g} {bob_public}".encode())
 print(f"Sent p, g, and public key to Alice: p={p}, g={g}, bob_public={bob_public}")
 
-# Receive Alice's public key, DSS public key, identifier, and signature
+# Receive DSS public key, Alice's public key, identifier, and signature
 msg = s.recv(1024).decode()
-alice_public, alice_dss_public, alice_identifier, alice_signature = msg.split(' ', 3)
-alice_public = int(alice_public)
-alice_dss_public = int(alice_dss_public)
-alice_signature = tuple(map(int, alice_signature.split()))
-print(f"Received Alice's public key, DSS public key, identifier, and signature: {alice_public}, {alice_dss_public}, {alice_identifier}, {alice_signature}")
+dss_public, alice_public, alice_identifier, sign = eval(msg) 
+print(f"Received DSS public key, Alice's public key, identifier, and signature: {dss_public}, {alice_public}, {alice_identifier}, {sign}")
 
 # Verify Alice's signature
-verification = MyDSS.verify_signature(
-    (alice_identifier, alice_public, get_my_addr(), bob_public),
-    alice_signature,
-    (p, g, alice_dss_public)
-)
-
+verification = MyDSS.verify_signature((alice_identifier, alice_public, get_my_addr(), bob_public), sign, dss_public)
 if not verification:
-    print("Signature verification failed. Closing connection.")
+    print("Signature verification failed.")
+    print("Closing connection.")
     s.close()
 else:
     print("Signature verification passed.")
 
-# Generate Bob's DSS keys
-bob_dss_private, bob_dss_public = MyDSS.get_keys()
-print(f"My DSS private key (not sent): {bob_dss_private}")
-print(f"My DSS public key (sent): {bob_dss_public}")
+# # Generate DSS keys for Bob
+# dss_private, dss_public = MyDSS.get_keys()
+# print(f"My DSS private key (not sent): {dss_private}")
+# print(f"My DSS public key (sent): {dss_public}")
 
-# Send Bob's DSS public key, identifier, and signature
-bob_identifier = get_my_addr()
-bob_signature = MyDSS.get_signature(
-    (bob_identifier, bob_public, alice_identifier, alice_public),
-    bob_dss_private,
-    (p, g, bob_dss_public)
-)
-s.send(f"{bob_dss_public} {bob_identifier} {bob_signature}".encode())
-print(f"My DSS public key, identifier, and signature (sent): {bob_dss_public}, {bob_identifier}, {bob_signature}")
+# # Sign the message to send to Alice
+# bob_identifier = get_my_addr()
+# sign = MyDSS.get_signature((bob_identifier, bob_public, alice_identifier, alice_public), dss_private, dss_public)
+
+# # Send Bob's DSS public key, public key, identifier, and signature to Alice
+# s.send(f"{bob_public} {sign[0]} {sign[1]}".encode())
+# print(f"Sent Bob's DSS public key, public key, identifier, and signature: {bob_public}, {sign}")
+
+# # Close the connection
+# s.close()

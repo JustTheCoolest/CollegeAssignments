@@ -44,7 +44,7 @@ def mod_inv(a, n):
     return result
 
 def get_hash(message):
-    return sum(message)
+    return message.__hash__()
 
 def get_signature(message, private_key, public_key):
     p, g, _ = public_key
