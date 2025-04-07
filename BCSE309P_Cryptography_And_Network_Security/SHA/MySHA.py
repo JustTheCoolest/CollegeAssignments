@@ -48,7 +48,7 @@ def maj(x, y, z, NUM_SIZE):
 def sha(message, NUM_SIZE, NUM_ROUNDS):
     message += chr(0x80)
     num_blocks = math.ceil((len(message)+8)/16)
-    mod_base = 2**(NUM_SIZE * 16)
+    mod_base = 2**(NUM_SIZE * 8)
     H = Hx.copy()
     blocks = []
     for x in range(num_blocks):
@@ -81,7 +81,7 @@ def sha(message, NUM_SIZE, NUM_ROUNDS):
             word = (sig1(words[x-2], NUM_SIZE) + words[x-7] + sig0(words[x-15], NUM_SIZE) + words[x-16]) % mod_base
             words.append(word)
 
-        print(words)
+        print([to_hex(word, NUM_SIZE) for word in words])
         
         a, b, c, d, e, f, g, h = H
         for x in range(NUM_ROUNDS):
