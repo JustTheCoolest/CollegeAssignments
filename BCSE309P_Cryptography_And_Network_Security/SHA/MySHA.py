@@ -45,7 +45,7 @@ def maj(x, y, z, NUM_SIZE):
 
 def sha(message, NUM_SIZE, NUM_ROUNDS):
     message += chr(0x80)
-    num_blocks = math.ceil(len(message)+8)
+    num_blocks = math.ceil((len(message)+8)/16)
     mod_base = 2**(NUM_SIZE * 16)
     H = Hx.copy()
     blocks = []
@@ -59,7 +59,7 @@ def sha(message, NUM_SIZE, NUM_ROUNDS):
             for z in range(NUM_SIZE):
                 curr_index = chunk_base + z
                 curr = ord(message[curr_index]) if curr_index < len(message) else 0
-                num *= NUM_SIZE * 8
+                num <<= 8
                 num += curr
                 assert curr < 2**8
             block.append(num)
@@ -67,15 +67,19 @@ def sha(message, NUM_SIZE, NUM_ROUNDS):
         # Flag: Using a multi-pass solution at the expense of higher memory complexity, for code simplicity
 
     size = (len(message) - 1) * 8
-    blocks[-1][-2] = size % mod_base # Flag: Ignoring Python's lack of compile phase optimisations
-    blocks[-1][-1] = size // mod_base
+    blocks[-1][-1] = size % mod_base # Flag: Ignoring Python's lack of compile phase optimisations
+    blocks[-1][-2] = size // mod_base
     assert blocks[-1][-2] < mod_base
+
+    print(blocks)
 
     for block in blocks:
         words = list(block)
         for x in range(16, NUM_ROUNDS):
             word = (sig1(words[x-2], NUM_SIZE) + words[x-7] + sig0(words[x-15], NUM_SIZE) + words[x-16]) % mod_base
             words.append(word)
+
+        print(words)
         
         a, b, c, d, e, f, g, h = H
         for x in range(NUM_ROUNDS):
@@ -91,6 +95,8 @@ def sha(message, NUM_SIZE, NUM_ROUNDS):
     result = ""
     for comp in H:
         result += to_hex(comp, NUM_SIZE)
+
+    assert len(result) == 16 * NUM_SIZE * 2
 
     return result
 
