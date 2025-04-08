@@ -26,6 +26,7 @@ def generate_e(phi):
 def mod_inv(a, n):
     """ Assuming it exists """
     # Flag: e generation and d generation can be done at once
+    # Flag: Alternate implementation algorithms can be explored for a potential speed up
     # print(a, n)
     x1, y1 = 1, 0
     x2, y2 = 0, 1
@@ -80,4 +81,5 @@ def encrypt(text, key):
     return result
 
 def decrypt(text, key):
+    # Flag: There's a more efficieint algorithm to implement exponentiation on the decryptor's side
     return encrypt(text, key)

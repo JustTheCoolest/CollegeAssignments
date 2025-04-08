@@ -6,13 +6,18 @@ References:
 4. https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
 """
 
+"""
+Notes:
+1. Manually tested for small string, but yet to be tested for strings greater than 1 block in size (it'll likely work)
+"""
+
 import math
 
 def to_hex(num, NUM_SIZE):
     # Convert the number to a hexadecimal string and pad it to NUM_SIZE bytes
     hex_str = hex(num)[2:]  # Remove the '0x' prefix
     hex_str = hex_str.zfill(NUM_SIZE * 2)  # Pad to NUM_SIZE bytes (2 hex digits per byte)
-    print(len(hex_str), hex_str)
+    #print(len(hex_str), hex_str)
     assert len(hex_str) == NUM_SIZE * 2
     return hex_str
 
@@ -65,7 +70,7 @@ def sha(message, NUM_SIZE, NUM_ROUNDS, K, Hx, function_parameters):
     blocks[-1][-2] = size // mod_base
     assert blocks[-1][-2] < mod_base
 
-    print(blocks)
+    #print(blocks)
 
     for block in blocks:
         words = list(block)
@@ -76,7 +81,7 @@ def sha(message, NUM_SIZE, NUM_ROUNDS, K, Hx, function_parameters):
                     words[x-16]) % mod_base
             words.append(word)
 
-        print([to_hex(word, NUM_SIZE) for word in words])
+        #print([to_hex(word, NUM_SIZE) for word in words])
         
         a, b, c, d, e, f, g, h = H
         for x in range(NUM_ROUNDS):
@@ -90,7 +95,7 @@ def sha(message, NUM_SIZE, NUM_ROUNDS, K, Hx, function_parameters):
             X.append((x+y)%mod_base)
         H = X
 
-    print(H, len(H))
+    #print(H, len(H))
     assert len(H) == 8
 
     result = ""
